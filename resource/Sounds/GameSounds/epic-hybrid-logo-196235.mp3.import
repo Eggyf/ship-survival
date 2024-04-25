@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/epic-hybrid-logo-196235.mp3-1a6af466d9fec596b286bbb3433f7f20.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/epic-hybrid-logo-196235.mp3"
+dest_files=[ "res://.import/epic-hybrid-logo-196235.mp3-1a6af466d9fec596b286bbb3433f7f20.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

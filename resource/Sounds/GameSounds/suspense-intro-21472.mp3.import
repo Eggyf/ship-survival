@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/suspense-intro-21472.mp3-e846e7d3fd5a4daf1c4518e6082ee671.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/suspense-intro-21472.mp3"
+dest_files=[ "res://.import/suspense-intro-21472.mp3-e846e7d3fd5a4daf1c4518e6082ee671.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

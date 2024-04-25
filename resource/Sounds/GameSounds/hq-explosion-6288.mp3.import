@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/hq-explosion-6288.mp3-a170b2e2180e501d7a8779c146f829f8.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/hq-explosion-6288.mp3"
+dest_files=[ "res://.import/hq-explosion-6288.mp3-a170b2e2180e501d7a8779c146f829f8.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

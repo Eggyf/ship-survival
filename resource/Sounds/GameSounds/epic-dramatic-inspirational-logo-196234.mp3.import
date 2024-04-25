@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/epic-dramatic-inspirational-logo-196234.mp3-83223ecdde0a07f8e37cdad683e98e65.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/epic-dramatic-inspirational-logo-196234.mp3"
+dest_files=[ "res://.import/epic-dramatic-inspirational-logo-196234.mp3-83223ecdde0a07f8e37cdad683e98e65.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

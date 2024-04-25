@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/the-creepy-war-atmosphere-will-give-you-goosebumps-165914.mp3-dc5a595fc8fd8a87fe3a41201958c8f1.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/the-creepy-war-atmosphere-will-give-you-goosebumps-165914.mp3"
+dest_files=[ "res://.import/the-creepy-war-atmosphere-will-give-you-goosebumps-165914.mp3-dc5a595fc8fd8a87fe3a41201958c8f1.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/cinematic-hyperspace-logo-196232.mp3-6958a78d5c885ea13460a8fac17174f6.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/cinematic-hyperspace-logo-196232.mp3"
+dest_files=[ "res://.import/cinematic-hyperspace-logo-196232.mp3-6958a78d5c885ea13460a8fac17174f6.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

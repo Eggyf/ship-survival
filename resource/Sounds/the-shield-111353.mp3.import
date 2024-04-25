@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/the-shield-111353.mp3-de63257d1d98f02e4593683e6244dea9.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/the-shield-111353.mp3"
+dest_files=[ "res://.import/the-shield-111353.mp3-de63257d1d98f02e4593683e6244dea9.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -1,0 +1,119 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://player.gd" type="Script" id=1]
+[ext_resource path="res://resource/user/user_ship/fire_ship2.png" type="Texture" id=2]
+[ext_resource path="res://resource/user/user_ship/variation_speed1.png" type="Texture" id=3]
+[ext_resource path="res://resource/user/user_ship/backward_desplacement.png" type="Texture" id=4]
+[ext_resource path="res://resource/user/user_ship/ship_fire_left_side.png" type="Texture" id=5]
+[ext_resource path="res://resource/user/user_ship/ship_fire_right_side.png" type="Texture" id=6]
+[ext_resource path="res://resource/user/user_ship/fire_ship0.png" type="Texture" id=7]
+[ext_resource path="res://bullet.tscn" type="PackedScene" id=8]
+[ext_resource path="res://explotion_sprite.tscn" type="PackedScene" id=9]
+[ext_resource path="res://explotion.tscn" type="PackedScene" id=10]
+[ext_resource path="res://ship_collision_animation.tscn" type="PackedScene" id=11]
+[ext_resource path="res://ship_collision.tscn" type="PackedScene" id=12]
+[ext_resource path="res://direction_collision.tscn" type="PackedScene" id=13]
+[ext_resource path="res://head_west.tscn" type="PackedScene" id=17]
+[ext_resource path="res://head_east.tscn" type="PackedScene" id=18]
+[ext_resource path="res://head_south.tscn" type="PackedScene" id=19]
+[ext_resource path="res://head_north_east.tscn" type="PackedScene" id=20]
+[ext_resource path="res://head_south_est.tscn" type="PackedScene" id=21]
+[ext_resource path="res://head_south_west.tscn" type="PackedScene" id=22]
+[ext_resource path="res://head_north.tscn" type="PackedScene" id=23]
+[ext_resource path="res://head_north_west.tscn" type="PackedScene" id=24]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "desplace_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "desplace_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "speed1",
+"speed": 100.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "speed3",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "step_back",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=2]
+height = 460.0
+
+[node name="player" type="Area2D"]
+collision_mask = 62
+script = ExtResource( 1 )
+Bullet = ExtResource( 8 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 0.181, 0.14 )
+frames = SubResource( 1 )
+animation = "speed1"
+frame = 1
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+scale = Vector2( 1, 0.1 )
+shape = SubResource( 2 )
+
+[node name="explotion_animation" parent="." instance=ExtResource( 10 )]
+playback_speed = 6.0
+
+[node name="explotion" parent="." instance=ExtResource( 9 )]
+position = Vector2( 0, 0 )
+
+[node name="ship_collision" parent="." instance=ExtResource( 12 )]
+frame = 0
+
+[node name="ship_collision_animation" parent="." instance=ExtResource( 11 )]
+
+[node name="head_west" parent="." instance=ExtResource( 17 )]
+position = Vector2( -49, 0 )
+
+[node name="head_north" parent="." instance=ExtResource( 23 )]
+position = Vector2( 0, -43 )
+
+[node name="head_east" parent="." instance=ExtResource( 18 )]
+position = Vector2( 49, 0 )
+
+[node name="head_south_west" parent="." instance=ExtResource( 22 )]
+position = Vector2( -35, 34 )
+
+[node name="head_south" parent="." instance=ExtResource( 19 )]
+position = Vector2( 0, 41 )
+
+[node name="head_north_east" parent="." instance=ExtResource( 20 )]
+position = Vector2( 36, -35 )
+
+[node name="head_south_est" parent="." instance=ExtResource( 21 )]
+position = Vector2( 34, 31 )
+
+[node name="head_north_west" parent="." instance=ExtResource( 24 )]
+position = Vector2( -31, -30 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( -43, 1 )
+scale = Vector2( 0.181, 0.14 )
+current = true
+zoom = Vector2( 0.8, 0.7 )
+smoothing_enabled = true
+
+[node name="direction_collision" parent="." instance=ExtResource( 13 )]
+
+[connection signal="area_entered" from="." to="." method="_on_player_area_entered"]
+[connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]
+[connection signal="animation_finished" from="ship_collision_animation" to="." method="_on_ship_collision_animation_animation_finished"]

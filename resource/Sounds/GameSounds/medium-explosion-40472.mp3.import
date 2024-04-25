@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/medium-explosion-40472.mp3-9742316cc07272c1fea02a42f1bc2760.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/medium-explosion-40472.mp3"
+dest_files=[ "res://.import/medium-explosion-40472.mp3-9742316cc07272c1fea02a42f1bc2760.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

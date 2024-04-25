@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/epic-powerful-logo-196229.mp3-5adf9edebef6d0fcecc99c8ad8c400bb.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/epic-powerful-logo-196229.mp3"
+dest_files=[ "res://.import/epic-powerful-logo-196229.mp3-5adf9edebef6d0fcecc99c8ad8c400bb.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

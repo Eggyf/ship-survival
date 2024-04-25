@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://resource/Sounds/gun-shot-1-176892.mp3" type="AudioStream" id=1]
+[ext_resource path="res://bullet_contact.gd" type="Script" id=2]
+
+[node name="bullet_contact" type="AudioStreamPlayer2D"]
+stream = ExtResource( 1 )
+volume_db = -15.0
+attenuation = 1.18921
+script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.8
+autostart = true
+
+[connection signal="finished" from="." to="." method="_on_bullet_contact_finished"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

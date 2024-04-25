@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/big-boom-202678.mp3-fd56aebfedf728aef59e12fa3f10b971.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/GameSounds/big-boom-202678.mp3"
+dest_files=[ "res://.import/big-boom-202678.mp3-fd56aebfedf728aef59e12fa3f10b971.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

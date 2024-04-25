@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/dramatic-reveal-21469.mp3-e58004921b56308ed17bbb10d707c75f.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/dramatic-reveal-21469.mp3"
+dest_files=[ "res://.import/dramatic-reveal-21469.mp3-e58004921b56308ed17bbb10d707c75f.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

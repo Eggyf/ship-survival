@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/defining-moments-202410.mp3-6eb135fe12cb57b379c835ddca8a9777.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/defining-moments-202410.mp3"
+dest_files=[ "res://.import/defining-moments-202410.mp3-6eb135fe12cb57b379c835ddca8a9777.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

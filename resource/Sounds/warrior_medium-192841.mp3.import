@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/warrior_medium-192841.mp3-55705dbea089f51a4480481d8eab8821.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/warrior_medium-192841.mp3"
+dest_files=[ "res://.import/warrior_medium-192841.mp3-55705dbea089f51a4480481d8eab8821.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/blaster-multiple-14893.mp3-3f6cb4401654a2d0b2c74eb563ae215a.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/blaster-multiple-14893.mp3"
+dest_files=[ "res://.import/blaster-multiple-14893.mp3-3f6cb4401654a2d0b2c74eb563ae215a.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

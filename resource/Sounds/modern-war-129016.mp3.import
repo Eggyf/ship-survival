@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/modern-war-129016.mp3-774df4731ff3ae36ae9a011393f95067.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/modern-war-129016.mp3"
+dest_files=[ "res://.import/modern-war-129016.mp3-774df4731ff3ae36ae9a011393f95067.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/the-epic-trailer-12955.mp3-5a1e2e0d16ebcd7b1226cab2f772c452.mp3str"
+
+[deps]
+
+source_file="res://resource/Sounds/the-epic-trailer-12955.mp3"
+dest_files=[ "res://.import/the-epic-trailer-12955.mp3-5a1e2e0d16ebcd7b1226cab2f772c452.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0
