@@ -302,11 +302,11 @@ func draw_flags():
 	var current_time_msec = OS.get_ticks_msec()
 	
 	if current_time_msec % 2:
-		$red_flag.set_position(Vector2( (left_flag["column"] + 1) * 30, (left_flag["row"]) * 30 ) )
-		$blue_flag.set_position(Vector2( (right_flag["column"] + 1) * 30, (right_flag["row"]) * 30 ) )
+		$red_flag.set_position(Vector2( (left_flag["column"]) * 30, (left_flag["row"] + 1) * 30 ) )
+		$blue_flag.set_position(Vector2( (right_flag["column"]) * 30, (right_flag["row"] + 1) * 30 ) )
 	else:
-		$blue_flag.set_position(Vector2( (right_flag["column"] + 1) * 30, (right_flag["row"]) * 30 ) )
-		$red_flag.set_position(Vector2( (left_flag["column"] + 1) * 30, (left_flag["row"]) * 30 ) )
+		$blue_flag.set_position(Vector2( (right_flag["column"]) * 30, (right_flag["row"] + 1) * 30 ) )
+		$red_flag.set_position(Vector2( (left_flag["column"] ) * 30, (left_flag["row"] + 1) * 30  ) )
 	
 	pass
 
