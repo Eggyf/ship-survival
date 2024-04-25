@@ -151,6 +151,8 @@ func init(commander_enemy , player_soldiers , player_position , Map ):
 	
 	draw_map(Map)
 	
+	locate_flags()
+	
 	pass
 
 func draw_map(Map):
@@ -198,26 +200,26 @@ func best_hole( start ):
 	var best_matrix
 	
 	var top_matrix = []
-	var center_matrix
-	var bottom_matrix
+	var center_matrix = []
+	var bottom_matrix = []
 	
 	for i in range( 0, int(my_map.size()/3) ): # row
 		var row = []
-		for j in range( 0 , start + int(my_map.size()/3) ):# column
-			row.append( my_map[i][j] )			
+		for j in range( start , start + int(my_map.size()/3) ):# column
+			row.append( my_map[i][j] )
 		
 		top_matrix.append(row)
 	
 	for i in range( int(my_map.size()/3) , int(my_map.size()/3) * 2 ): # row
 		var row = []
-		for j in range( 0 , start + int(my_map.size()/3) ): #column
+		for j in range( start , start + int(my_map.size()/3) ): #column
 			row.append( my_map[i][j] )
 		
 		center_matrix.append(row)
 	
 	for i in range( int(my_map.size()/3) * 2, my_map.size() ): # row
 		var row = []
-		for j in range( 0 ,  start + int(my_map.size()/3) ): # column
+		for j in range( start ,  start + int(my_map.size()/3) ): # column
 			row.append( my_map[i][j] )
 		
 		bottom_matrix.append(row)
