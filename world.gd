@@ -53,7 +53,7 @@ func _ready():
 	
 	OS.execute('py',[server_global_location,host,port],false,[])
 	
-	var result = world_map.get_map_formatted(10,10,10)
+	var result = world_map.get_map_formatted(5,5,20)
 	my_map = result["formated"]
 	original_map = result["original"]
 	
@@ -151,7 +151,7 @@ func init(commander_enemy , player_soldiers , player_position , Map ):
 	
 	draw_map(Map)
 	
-	locate_flags()
+	draw_flags()
 	
 	pass
 
@@ -226,44 +226,89 @@ func best_hole( start ):
 	
 	# select walless matrix in the range
 	best = count_blocks(top_matrix)
-	best_matrix = top_matrix
+	best_matrix = { "matrix": top_matrix , "row_offset": 0}
 	
 	var count2 = count_blocks(center_matrix)
 	
 	if best < count2:
-		best_matrix = center_matrix
+		best_matrix = { "matrix": center_matrix , "row_offset": int(my_map.size()/3) }
 		
 	var count3 = count_blocks(bottom_matrix)
 	if best< count3:
-		best_matrix = bottom_matrix
+		best_matrix = { "matrix": bottom_matrix , "row_offset": int(my_map.size()/3)*2 }
 	
 	return best_matrix
 
+func generate_left_flag(left):
+	
+	var left_matrix = left["matrix"]
+	var left_row_offset = left["row_offset"]
+	var posible_positions = []
+	
+	var current_time_msec = OS.get_ticks_msec()
+	
+	for i in range( 0 , left_matrix.size() ) :
+		for j in range( 0 , left_matrix[0].size() ) :
+			
+			if is_valid_position(left_matrix,i,j):
+				
+				if left_matrix[i][j] and left_matrix[ i+ 1 ][j] and left_matrix[i][j + 1] and left_matrix[i + 1][j + 1]:
+					var left_flag = { "row":i + left_row_offset , "column": j }
+					posible_positions.append(left_flag)
+	
+	return posible_positions[ current_time_msec % posible_positions.size() ]
+
+func generate_right_flag( right ):
+	
+	var right_matrix = right["matrix"]
+	var right_row_offset = right["row_offset"]
+	var posible_positions = []
+	
+	var current_time_msec = OS.get_ticks_msec()
+	for i in range( 0 , right_matrix.size() ) :
+		for j in range( 0 , right_matrix[0].size() ) :
+			
+			if is_valid_position(right_matrix,i,j):
+				
+				if right_matrix[i][j] and right_matrix[ i+ 1 ][j] and right_matrix[i][j + 1] and right_matrix[i + 1][j + 1]:
+					var right_flag = { "row":i + right_row_offset , "column": j +  2 * int(my_map.size()/3)  }
+					posible_positions.append(right_flag)
+					
+	return posible_positions[ current_time_msec % posible_positions.size() ]
+
 func locate_flags():
 	
-	var left_matrix = best_hole(0)
-	var right_matrix = best_hole( int(my_map.size()* 2 / 3) )
+	var left = best_hole(0)
+	var left_flag = generate_left_flag(left)
 	
-	var left_flag
-	for i in range( 0 , left_matrix.size() ) :
-		for j in range( 0 , left_matrix.size() ) :
-			if left_matrix[i][j]:
-				left_flag = { "row":i , "column": j }
+	var right = best_hole( int(my_map.size()* 2 / 3) )
+	var right_flag = generate_right_flag(right)
 	
-	var right_flag
-	for i in range( 0 , right_matrix.size() ) :
-		for j in range( 0 , right_matrix.size() ) :
-			if right_matrix[i][j]:
-				right_flag = { "row":i , "column": j }
-				
+	print( "left:", left_flag )
+	print( "right:" ,right_flag )
+
+	return { "left": left_flag, "right": right_flag }
+
+func is_valid_position(matrix , row,column):
 	
-	print( left_flag )
+	return row + 1 < matrix.size() and column + 1 < matrix[0].size()
+
+func draw_flags():
 	
-	return [ left_flag, right_flag ]
+	var flags = locate_flags()
+	var left_flag = flags["left"]
+	var right_flag = flags["right"]
+	
+	var current_time_msec = OS.get_ticks_msec()
+	
+	if current_time_msec % 2:
+		$red_flag.set_position(Vector2( (left_flag["column"] + 1) * 30, (left_flag["row"]) * 30 ) )
+		$blue_flag.set_position(Vector2( (right_flag["column"] + 1) * 30, (right_flag["row"]) * 30 ) )
+	else:
+		$blue_flag.set_position(Vector2( (right_flag["column"] + 1) * 30, (right_flag["row"]) * 30 ) )
+		$red_flag.set_position(Vector2( (left_flag["column"] + 1) * 30, (left_flag["row"]) * 30 ) )
+	
+	pass
 
 func locate_ships( number_ally , number_enemy ):
-	
-	
-	
-
 	pass

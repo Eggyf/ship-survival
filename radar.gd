@@ -8,7 +8,7 @@ var enemy_list = []
 var targets = []
 
 func _on_radar_area_entered(area):
-
+	
 	for item in targets:
 		
 		if item == area.id:

@@ -21,18 +21,20 @@ animations = [ {
 
 [node name="red_flag" type="Area2D"]
 position = Vector2( 26, 22 )
+collision_layer = 0
+collision_mask = 0
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 1.90735e-06, -0.499991 )
+position = Vector2( 1.90735e-06, -0.49999 )
+scale = Vector2( 5, 5 )
 shape = SubResource( 3 )
-
-[node name="Camera2D" type="Camera2D" parent="."]
-current = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.5, 0.5 )
 frames = SubResource( 4 )
 animation = "flag"
-frame = 4
+frame = 1
 playing = true
+
+[connection signal="area_entered" from="." to="." method="_on_red_flag_area_entered"]
