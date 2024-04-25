@@ -12,7 +12,7 @@ var dimention_y
 var enemy_detected = false
 var enemy_list = []
 var shot_avaliable = false
-
+var ship_name
 var time = 0 # time between every key press of the type ( up, down , left , right )
 
 # Called when the node enters the scene tree for the first time.
@@ -20,6 +20,7 @@ func _ready():
 	
 	hide()
 	$radar.targets = ["commander" , "enemy"]
+	ship_name = id.hash()
 	
 	pass
 

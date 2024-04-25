@@ -13,12 +13,14 @@ var time = 0
 var enemy_detected = false
 var enemy_list = []
 var shot_avaliable = false
+var ship_name
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	hide()
 	$radar.targets = ["friend" , "player"]
+	ship_name = id.hash()
 	
 	pass
 

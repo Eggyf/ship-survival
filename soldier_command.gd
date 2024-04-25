@@ -23,6 +23,7 @@ var time = 0 # time between every key press of the type ( up, down , left , righ
 var enemy_list = []
 var shot_avaliable = false
 var delta
+var ship_name
 
 # Called when the node enters the scene tree for the first time.
 
@@ -163,6 +164,8 @@ func _ready():
 	
 	hide()
 	$radar.targets = ["friend" , "player"]
+	ship_name = id.hash()
+
 	#InstructionsStack = ['right','right','right','right','right','right','right','right','right','right']
 	StateDefensive = true
 	#targetPosition = Vector2(1500,600)

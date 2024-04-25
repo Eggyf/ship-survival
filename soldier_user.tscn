@@ -70,7 +70,6 @@ shape = SubResource( 2 )
 playback_speed = 6.0
 
 [node name="explotion" parent="." instance=ExtResource( 8 )]
-position = Vector2( 0, 0 )
 
 [node name="ship_collision_animation" parent="." instance=ExtResource( 11 )]
 

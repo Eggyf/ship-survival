@@ -3,18 +3,23 @@ extends Node2D
 var commander
 var enemy_soldier 
 var player_soldier
-var time = 100
-var list_of_instance_of_enemy_soldiers = []
-var list_of_instance_of_player_soldiers = []
-var server_global_location = "E:\\COLLEGE\\Further-Programming\\goDot\\Ship_Survival\\server\\main.py"
-var commander_list = []
 var wall
-var wall_list = []
+var project_path = ProjectSettings.globalize_path("res://") + "server/main.py"
+var server_global_location = project_path
 onready var bullet_contact = $bullet_contact
 onready var ship_explotion = $ship_explotion
-var world_map = map.new()
+onready var commander_dead = $commander_dead
+onready var chip_explotion = $chip_explotion
+onready var player_dead = $player_dead
+onready var impact = $impact
+# ------server---------
 var host = '127.0.0.1'
 var port = 8000
+var client = StreamPeerTCP.new()
+var SimulationReady = false
+var serverUp = false
+var connector = ServerConnector.new()
+#---------------------
 var screen_size = Vector2()
 var playlist = [
 	
@@ -32,19 +37,17 @@ var playlist = [
 	preload("res://resource/Sounds/GameSounds/epic-hybrid-logo-196235.mp3"),
 	preload("res://resource/Sounds/GameSounds/epic-dramatic-inspirational-logo-196234.mp3"),
 ]
-var client = StreamPeerTCP.new()
-var serverUp = false
-var connector = ServerConnector.new()
+var world_map = map.new()
 var my_map
-var SimulationReady = false
 var player_state = true
 var length_x
 var length_y
-onready var commander_dead = $commander_dead
-onready var chip_explotion = $chip_explotion
-onready var player_dead = $player_dead
-onready var impact = $impact
-var original_map
+var time = 100
+var list_of_instance_of_enemy_soldiers = []
+var list_of_instance_of_player_soldiers = []
+var commander_list = []
+var left_flag
+var right_flag
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -53,10 +56,8 @@ func _ready():
 	
 	OS.execute('py',[server_global_location,host,port],false,[])
 	
-	var result = world_map.get_map_formatted(5,5,20)
-	my_map = result["formated"]
-	original_map = result["original"]
-	
+	my_map = world_map.get_map_formatted(5,5,20)
+	 
 	client.connect_to_host(host,port)
 	
 	quite_map()  
@@ -72,10 +73,8 @@ func _ready():
 	enemy_soldier = preload("res://soldier_command.tscn")
 	player_soldier = preload("res://soldier_user.tscn")
 	
-	init(  [ {"commander" : Vector2(100,520)  ,  "enemy_soldier" : [ Vector2(800,200) ] } ],
-			 { "player_soldier" : [ Vector2(500,300) ] } , Vector2(0,100) , 
-			my_map)
-	
+	instance_ship(Vector2(200,200),commander)
+	init(  1  , 5 , 5 , Vector2(0,0))
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	
@@ -119,39 +118,23 @@ func quite_map():
 	
 	pass
 
-func init(commander_enemy , player_soldiers , player_position , Map ):
+func instance_ship(pos, intance_ship_type):
 	
-	var instances_of_player_soldiers = player_soldiers["player_soldier"]
+	var ship = intance_ship_type.instance()
+	add_child(ship)
+	ship.start_position( pos , length_x ,length_y )
 	
+	return ship
+
+func init(commander_number , enemy_soldier_number , player_soldiers_number , player_position ):
+
 	$player.start_position(player_position , length_x , length_y )
 	
-	for group in commander_enemy:
-		
-		var commander_instance = self.commander.instance() # instance commander
-		add_child(commander_instance)
-		commander_instance.start_position( group["commander"] , length_x ,length_y )
-		commander_list.append(commander_instance) # add commander to list of commanders
-		
-		for enemy_soldier in  group["enemy_soldier"]: # instance all enemies
-		
-			var enemy = self.enemy_soldier.instance()
-			add_child(enemy)
-			enemy.start_position(enemy_soldier , length_x , length_y)
-			#enemy.SetTargetObject($player)
-		
-			list_of_instance_of_enemy_soldiers.append(enemy)
+	draw_map(my_map)
 	
-	for item in instances_of_player_soldiers: # instance all friends
-		
-		var friends = self.player_soldier.instance()
-		add_child(friends)
-		friends.start_position( item , length_x ,length_y )
-		
-		list_of_instance_of_player_soldiers.append(friends)
-	
-	draw_map(Map)
-	
-	draw_flags()
+	var flags = draw_flags()
+	var blue = flags["blue"]
+	var red = flags["red"]
 	
 	pass
 
@@ -304,15 +287,65 @@ func draw_flags():
 	if current_time_msec % 2:
 		$red_flag.set_position(Vector2( (left_flag["column"] + 1) * 30, (left_flag["row"] + 1) * 30 ) )
 		$blue_flag.set_position(Vector2( (right_flag["column"] + 1) * 30, (right_flag["row"] + 1) * 30 ) )
+		
+		return {"red":left_flag , "blue": right_flag }
 	else:
-		$blue_flag.set_position(Vector2( (right_flag["column"]+ 1) * 30, (right_flag["row"] + 1) * 30 ) )
-		$red_flag.set_position(Vector2( (left_flag["column"]+ 1 ) * 30, (left_flag["row"] + 1) * 30  ) )
-	
+		$blue_flag.set_position(Vector2( (left_flag["column"]+ 1) * 30, (left_flag["row"] + 1) * 30 ) )
+		$red_flag.set_position(Vector2( (right_flag["column"]+ 1 ) * 30, (right_flag["row"] + 1) * 30  ) )
+		
+		return {"red":right_flag , "blue": left_flag }
 	pass
 
-func locate_ships( number_ally , number_enemy ):
-	pass
+func is_bussy(bussy_cell_list,row,column):
 	
-func csp():
+	for cell in bussy_cell_list:
+		
+		if cell["row"] == row and cell["column"]: return true
+		
+	return false
+
+# csp restrictions
+func is_valid_ship_position( row,column,matrix , bussy_cell_list ): 
 	
+	if row - 2 < matrix.size() or row + 2 > matrix.size()  :
+		return false
+	
+	if column - 2 < matrix[0].size() or column + 2 > matrix[0].size()  :
+		return false
+	
+	if (left_flag["row"] == row and left_flag["column"] == column ) or \
+	   (right_flag["row"] == row and right_flag["column"] == column): return false
+		
+	for i in range(-1,1):
+		for j in range(-1,1):
+			
+			if  not matrix[ row + i][ column + j] and not is_bussy( bussy_cell_list , row , column ):
+				return false
+			
+	return true
+
+func locate_ships( number_ally , number_enemy , blue ,red ):
+	
+	var ally_list = csp( blue,number_ally , [] )
+	var enemy_list = csp( red,number_enemy , ally_list )
+	
+	list_of_instance_of_player_soldiers = draw_ships(ally_list)
+	list_of_instance_of_enemy_soldiers = draw_ships(enemy_list)
 	pass
+
+func draw_ships( list_of_ships ):
+	
+	var list_instance = []
+	for ship in list_of_ships:
+		
+		var pos = Vector2( (ship["column"] + 1) * 30 + 15 , (ship["row"] + 1) * 30 + 15  )
+		ship = instance_ship( pos, ship["ship"] )
+		list_instance.append(ship)
+		
+	return list_instance
+
+func csp( flag_position , number_ship , bussy_cell ):
+	
+	
+	
+	return bussy_cell

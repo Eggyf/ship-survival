@@ -94,5 +94,5 @@ func get_map_formatted(row,column , sub_matrix_length):
 	var map = get_map(row,column,sub_matrix_length)
 	var format = formatting_matrix(map,row,column,sub_matrix_length)
 	
-	return { "formated": format , "original": map }
+	return format
 
