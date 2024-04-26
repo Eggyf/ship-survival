@@ -136,6 +136,7 @@ func init(commander_number , enemy_soldier_number , player_soldiers_number , pla
 	var blue = flags["blue"]
 	var red = flags["red"]
 	
+	print("locating ships")
 	locate_ships( 3 , 3 , blue , red , 1 )
 	
 	pass
@@ -306,16 +307,16 @@ func is_bussy(bussy_cell_list,row,column):
 # csp restrictions
 func is_valid_ship_position( row,column,matrix , bussy_cell_list ): 
 	
-	if row - 2 < 0 or row + 2 > matrix.size()  :
+	if row - 1 < 0 or row + 1 > matrix.size() - 1 :
 		return false
 	
-	if column - 2 < 0 or column + 2 > matrix[0].size()  :
+	if column - 1 < 0 or column + 1 > matrix[0].size() - 1 :
 		return false
 		
-	for i in range(-1,1):
-		for j in range(-1,1):
+	for i in range(-1,2):
+		for j in range(-1,2):
 			
-			if  not matrix[ row + i][ column + j] or  is_bussy( bussy_cell_list , row , column ):
+			if not matrix[ row + i][ column + j]  or is_bussy( bussy_cell_list , row + i , column + j ):
 				return false
 			
 	return true
@@ -370,15 +371,17 @@ func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number
 func draw_ships( list_of_ships ,ship_type ):
 	
 	var list_instance = []
+	
 	for ship in list_of_ships:
 		
-		var pos = Vector2( (ship["column"]) * 30 + 15 , (ship["row"]) * 30 + 15  )
+		print(ship)
+		var pos = Vector2( ship["column"] * 30 + 15, ship["row"] * 30 + 15)
 		var my_ship = instance_ship( pos, ship_type )
 		list_instance.append(my_ship)
 		
 	return list_instance
 
-func neighborhood( row , column ):
+func neighborhood( row , column):
 	
 	var neighborhood_matrix = []
 	for i in range(-1,2):
@@ -394,8 +397,8 @@ func neighborhood( row , column ):
 func set_ship_bussy_cells( row,column ):
 	
 	var list = []
-	for i in range(-1,1):
-		for j in range(-1,1):
+	for i in range(-1,2):
+		for j in range(-1,2):
 			list.append( { "row": row + i, "column":column+j } )
 			
 	return list
@@ -403,17 +406,17 @@ func set_ship_bussy_cells( row,column ):
 func csp( flag_position , number_ship , bussy_cell ):
 	
 	var new_list = []
-	var my_neighbors = neighborhood( flag_position["row"] , flag_position["column"]  )
+	var my_neighbors = neighborhood( flag_position["row"] , flag_position["column"] )
 	var stack = [ my_neighbors ]
 	
 	var i = 0
-	while stack.size() != 0:
+	while i <= stack.size() * stack.size() :
 		
 		if number_ship == 0:
 			return {"bussy_cell": bussy_cell , "new": new_list}
 		
 		var neighbor = stack[i]
-			
+		
 		for row in neighbor:
 			
 			for cell in row :
@@ -429,8 +432,10 @@ func csp( flag_position , number_ship , bussy_cell ):
 					break
 			
 				my_neighbors = neighborhood(cell["row"],cell["column"])
+				
 				stack.append(my_neighbors)
 		
+		stack.remove(0)
 		i += 1
 		pass
 	
