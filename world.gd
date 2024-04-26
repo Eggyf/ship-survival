@@ -74,6 +74,7 @@ func _ready():
 	enemy_soldier = preload("res://soldier_command.tscn")
 	player_soldier = preload("res://soldier_user.tscn")
 	
+	print("locating ships")
 	init(  1  , 5 , 5 , Vector2(0,0))
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
@@ -136,7 +137,6 @@ func init(commander_number , enemy_soldier_number , player_soldiers_number , pla
 	var blue = flags["blue"]
 	var red = flags["red"]
 	
-	print("locating ships")
 	locate_ships( 3 , 3 , blue , red , 1 )
 	
 	pass
@@ -408,6 +408,7 @@ func csp( flag_position , number_ship , bussy_cell ):
 	var new_list = []
 	var my_neighbors = neighborhood( flag_position["row"] , flag_position["column"] )
 	var stack = [ my_neighbors ]
+	var expanded_nodes = []
 	
 	var i = 0
 	while i <= stack.size() * stack.size() :
@@ -431,15 +432,24 @@ func csp( flag_position , number_ship , bussy_cell ):
 					number_ship -= 1
 					break
 			
-				my_neighbors = neighborhood(cell["row"],cell["column"])
-				
-				stack.append(my_neighbors)
+				if not is_expanded( cell , expanded_nodes ):
+					
+					my_neighbors = neighborhood(cell["row"],cell["column"])
+					expanded_nodes.append(cell)
+					stack.append(my_neighbors)
 		
 		stack.remove(0)
 		i += 1
 		pass
 	
 	emit_signal("not_ship_placement")
+
+func is_expanded( cell , list_nodes_expanded ):
+	
+	for item in list_nodes_expanded:
+		if item["row"] == cell["row"] and item["column"] == cell["column"]: return true
+	
+	return false
 
 func _on_world_not_ship_placement():
 	
