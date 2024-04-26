@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://player.gd" type="Script" id=1]
 [ext_resource path="res://resource/user/user_ship/fire_ship2.png" type="Texture" id=2]
@@ -14,13 +14,6 @@
 [ext_resource path="res://ship_collision.tscn" type="PackedScene" id=12]
 [ext_resource path="res://direction_collision.tscn" type="PackedScene" id=13]
 [ext_resource path="res://head_west.tscn" type="PackedScene" id=17]
-[ext_resource path="res://head_east.tscn" type="PackedScene" id=18]
-[ext_resource path="res://head_south.tscn" type="PackedScene" id=19]
-[ext_resource path="res://head_north_east.tscn" type="PackedScene" id=20]
-[ext_resource path="res://head_south_est.tscn" type="PackedScene" id=21]
-[ext_resource path="res://head_south_west.tscn" type="PackedScene" id=22]
-[ext_resource path="res://head_north.tscn" type="PackedScene" id=23]
-[ext_resource path="res://head_north_west.tscn" type="PackedScene" id=24]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -79,29 +72,8 @@ frame = 0
 
 [node name="ship_collision_animation" parent="." instance=ExtResource( 11 )]
 
-[node name="head_west" parent="." instance=ExtResource( 17 )]
-position = Vector2( -49, 0 )
-
-[node name="head_north" parent="." instance=ExtResource( 23 )]
-position = Vector2( 0, -43 )
-
-[node name="head_east" parent="." instance=ExtResource( 18 )]
-position = Vector2( 49, 0 )
-
-[node name="head_south_west" parent="." instance=ExtResource( 22 )]
-position = Vector2( -35, 34 )
-
-[node name="head_south" parent="." instance=ExtResource( 19 )]
-position = Vector2( 0, 41 )
-
-[node name="head_north_east" parent="." instance=ExtResource( 20 )]
-position = Vector2( 36, -35 )
-
-[node name="head_south_est" parent="." instance=ExtResource( 21 )]
-position = Vector2( 34, 31 )
-
-[node name="head_north_west" parent="." instance=ExtResource( 24 )]
-position = Vector2( -31, -30 )
+[node name="head" parent="." instance=ExtResource( 17 )]
+position = Vector2( 44, -1 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( -43, 1 )

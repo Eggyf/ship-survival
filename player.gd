@@ -85,14 +85,16 @@ func change_direction(position,delta):
 
 func rotate_clock_wise():
 	
-	$AnimatedSprite.rotate(PI/4) 
-	rotation_head += -45
+	self.rotate(PI/20) 
+	$direction_collision.rotate(-PI/20)
+	rotation_head += -9
 	pass
 
 func rotate_against_clock_wise():
 	
-	$AnimatedSprite.rotate(-PI/4) 
-	rotation_head += 45
+	self.rotate(-PI/20) 
+	$direction_collision.rotate(PI/20)
+	rotation_head += 9
 	pass
 
 func is_colliding():
@@ -170,50 +172,21 @@ func shot():
 		var my_shot = Bullet.instance()
 		get_tree().current_scene.add_child(my_shot) # set the bullet as child of world
 	
-		my_shot.rotate($AnimatedSprite.rotation) # give rotation bullet
+		my_shot.rotate(rotation) # give rotation bullet
 		var shot_direction = direction_head() # give direction to bullet
-		my_shot.position = target_shot() # give postion to bullet
+		my_shot.position = $head.global_position # give postion to bullet
 	
 		my_shot.set_direction(shot_direction) #shot
 		
-		pass
-	
-	pass
-
-func target_shot():
-	
-	if rotation_head == 0 or rotation_head == 360 :
-		return $head_east.global_position
-	if rotation_head == 45  :
-		return $head_north_east.global_position
-	if rotation_head == 90  :
-		return $head_north.global_position
-	if rotation_head == 135  :
-		return $head_north_west.global_position
-	if rotation_head == 180  :
-		return $head_west.global_position
-	if rotation_head == 225  :
-		return $head_south_west.global_position
-	if rotation_head == 270  :
-		return $head_south.global_position
-	if rotation_head == 315  :
-		return $head_south_est.global_position
-	
+		pass	
 	pass
 
 func direction_head():
 	
-	var head_direction = [ [ 0, Vector2(1,0)] , [45 , Vector2(sqrt(2)/2,-sqrt(2)/2)] ,[90 , Vector2(0,-1) ],
-							[135 , Vector2(- sqrt(2)/2,-sqrt(2)/2 )] , [180 , Vector2(-1,0) ],
-							[ 225 , Vector2(-sqrt(2)/2,sqrt(2)/2)] , [270 , Vector2( 0 , 1 )] , 
-							[315 ,  Vector2( sqrt(2)/2 , sqrt(2)/2 )] , [360 , Vector2(1,0)] 
-						 ]
-	for angle in head_direction:
-		
-		if angle[0] == rotation_head:
-			return angle[1]
-		pass
-	pass	
+	var magnitude = 1.0  # Magnitude (length) of the vector
+	var vector = Vector2(magnitude, 0).rotated(rotation)
+	
+	return vector	
 
 func ship_explotion():
 	

@@ -3,7 +3,6 @@
 [ext_resource path="res://right.gd" type="Script" id=1]
 
 [node name="Node2D2" type="Node2D"]
-position = Vector2( 83, 45 )
 rotation = -1.5708
 scale = Vector2( 1, 0.6 )
 script = ExtResource( 1 )
@@ -12,4 +11,18 @@ script = ExtResource( 1 )
 position = Vector2( 0, -1.90735e-05 )
 enabled = true
 cast_to = Vector2( 0, 30 )
+collision_mask = 16
+
+[node name="right3" type="RayCast2D" parent="."]
+position = Vector2( 0, -1.90735e-05 )
+rotation = 0.785398
+enabled = true
+cast_to = Vector2( 0, 20 )
+collision_mask = 16
+
+[node name="right4" type="RayCast2D" parent="."]
+position = Vector2( 0, -1.90735e-05 )
+rotation = -0.785398
+enabled = true
+cast_to = Vector2( 0, 20 )
 collision_mask = 16

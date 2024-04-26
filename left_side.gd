@@ -4,6 +4,5 @@ extends Node2D
 func is_colliding():
 	
 	
-	if $left2.is_colliding(): return true
+	return $left2.is_colliding() and $left3.is_colliding() and $left4.is_colliding()
 	
-	return false
