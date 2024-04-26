@@ -341,7 +341,6 @@ func bussy_flag_cell( flag_pos ):
 		{ "row": flag_pos["row"] , "column": flag_pos["column"] + 1 } ,
 		{ "row": flag_pos["row"] - 1 , "column": flag_pos["column"] + 1 } ,
 	]
-
 func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders):
 	
 	var map = copy_matrix()

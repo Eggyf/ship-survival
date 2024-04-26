@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://soldier_command.gd" type="Script" id=1]
 [ext_resource path="res://resource/enemies/soldier/ship_left.png" type="Texture" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://ship_collision.tscn" type="PackedScene" id=10]
 [ext_resource path="res://ship_collision_animation.tscn" type="PackedScene" id=11]
 [ext_resource path="res://direction_collision.tscn" type="PackedScene" id=12]
+[ext_resource path="res://life_tag.tscn" type="PackedScene" id=13]
 [ext_resource path="res://head_east.tscn" type="PackedScene" id=17]
 [ext_resource path="res://radar.tscn" type="PackedScene" id=32]
 
@@ -57,6 +58,7 @@ position = Vector2( -0.483826, 0 )
 scale = Vector2( 0.151062, 0.118333 )
 frames = SubResource( 1 )
 animation = "speed1"
+frame = 1
 playing = true
 offset = Vector2( -133, 0 )
 flip_v = true
@@ -87,6 +89,9 @@ wait_time = 0.5
 autostart = true
 
 [node name="direction_collision" parent="." instance=ExtResource( 12 )]
+
+[node name="life_tag" parent="." instance=ExtResource( 13 )]
+position = Vector2( -18, -37 )
 
 [connection signal="area_entered" from="." to="." method="_on_enemy_soldier_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]

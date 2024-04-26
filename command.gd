@@ -20,6 +20,7 @@ var my_soldiers = []
 func _ready():
 	
 	hide()
+	$life_tag.set_life(life)
 	$radar.targets = ["friend" , "player"]
 	ship_name = id.hash()
 	
@@ -147,6 +148,8 @@ func fill_life():
 func _physics_process(delta):
 	
 	motion = Vector2()
+	
+	$life_tag.set_life(life)
 	
 	fill_life()
 	

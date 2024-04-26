@@ -19,6 +19,7 @@ var time = 0 # time between every key press of the type ( up, down , left , righ
 func _ready():
 	
 	hide()
+	$life_tag.set_life(life)
 	$radar.targets = ["commander" , "enemy"]
 	ship_name = id.hash()
 	
@@ -146,6 +147,8 @@ func fill_life():
 func _physics_process(delta):
 	
 	motion = Vector2()
+	
+	$life_tag.set_life(life)
 	
 	fill_life()
 	

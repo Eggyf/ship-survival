@@ -163,6 +163,7 @@ func MakeAction():
 func _ready():
 	
 	hide()
+	$life_tag.set_life(life)
 	$radar.targets = ["friend" , "player"]
 	ship_name = id.hash()
 
@@ -281,6 +282,8 @@ func _physics_process(delta):
 	self.delta = delta
 	
 	motion = Vector2()
+	
+	$life_tag.set_life(life)
 	
 	fill_life()
 	

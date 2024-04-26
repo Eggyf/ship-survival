@@ -1,0 +1,16 @@
+extends Node2D
+
+var life = ""
+
+func set_life(life):
+	
+	$Label.text = "life:" + str(life)
+	
+	pass
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	
+	
+
+	pass

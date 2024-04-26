@@ -15,6 +15,7 @@ var dimention_y
 func _ready():
 	
 	hide()
+	$life_tag.set_life(life)
 	
 	thread.start( self , "change_rotation")
 		
@@ -141,6 +142,7 @@ func _process(delta):
 
 	motion = Vector2()
 	
+	$life_tag.set_life(life)
 
 	position =  change_direction(position,delta)
 
