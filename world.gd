@@ -58,12 +58,8 @@ func _ready():
 	screen_size = get_viewport_rect().size
 	
 	OS.execute('py',[server_global_location,host,port],false,[])
-	
-	my_map = world_map.get_map_formatted(5,5,20)
 	 
 	client.connect_to_host(host,port)
-	
-	quite_map()  
 	
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
@@ -77,8 +73,7 @@ func _ready():
 	player_soldier = preload("res://soldier_user.tscn")
 	player = preload("res://player.tscn")
 	
-	print("locating ships")
-	init(  1  , 10 , 10 , Vector2(0,0))
+	init(  1  , 10 , 10)
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	
@@ -125,7 +120,7 @@ func game_over():
 
 func quite_map():
 	
-	var map_size = my_map[0].size()* 30
+	var map_size = my_map[0].size() * 30
 	
 	$left_frontier.set_( Vector2(0,map_size /2) , map_size , 20)
 	
@@ -140,15 +135,17 @@ func quite_map():
 	
 	pass
 
-func init(commander_number , enemy_soldier_number , player_soldiers_number , user ):
+func init(commander_number , enemy_soldier_number , player_soldiers_number ):
 	
+	my_map = world_map.get_map_formatted(5,5,20)
 	draw_map(my_map)
+	quite_map()  
 	
 	var flags = draw_flags()
 	var blue = flags["blue"]
 	var red = flags["red"]
 	
-	locate_ships( player_soldiers_number , enemy_soldier_number , blue , red , commander_number , user  )
+	locate_ships( player_soldiers_number , enemy_soldier_number , blue , red , commander_number )
 	
 	pass
 
@@ -345,15 +342,16 @@ func bussy_flag_cell( flag_pos ):
 		{ "row": flag_pos["row"] - 1 , "column": flag_pos["column"] + 1 } ,
 	]
 
-func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders , user):
+func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders):
 	
 	var map = copy_matrix()
 	
 	# locate player
-	var user_result = csp(blue,1 , map )
+	var flag = { "row":blue["row"] , "column":blue["column"] , "flag":true }
+	var user_result = csp(flag,1 , map )
 	var user_pos = user_result["new"]
 	map = user_result["map"]
-	var start = user_result["start"]
+	var start = { "row": user_result["start"]["row"] , "column": user_result["start"]["column"] , "flag": false }
 	draw_ships(user_pos,player)
 	
 	# draw and locate user soldiers
@@ -366,12 +364,14 @@ func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number
 	for command in range(0,number_of_commanders):
 		
 		# locate commander
-		var my_result = csp( red , 1  , map )
+		flag = { "row":red["row"] , "column":red["column"] , "flag":true }
+		var my_result = csp( flag , 1  , map )
 		map = my_result["map"]
 		var boss = my_result["new"]
 		var group_start = my_result["start"]
 		
 		#locate commander soldiers
+		group_start = { "row": group_start["row"] , "column": group_start["column"] , "flag": false }
 		var new_result = csp( group_start , number_enemy_per_commander , map )
 		map = new_result["map"]
 		var enemy_list = new_result["new"]
@@ -461,9 +461,14 @@ func csp( flag_position , number_ship , map ):
 	
 	var visited = []
 	var new_list = []
-	map = set_flag_in_map(flag_position["row"],flag_position["column"],map)
-	var stack = neighborhood( flag_position["row"] , flag_position["column"] ,map ,visited)
+	var stack = []
 	
+	if flag_position["flag"]:
+		map = set_flag_in_map(flag_position["row"],flag_position["column"],map)
+		stack = neighborhood( flag_position["row"] , flag_position["column"] ,map ,visited)
+	else:
+		stack = neighborhood( flag_position["row"] , flag_position["column"] ,map ,visited)
+		
 	while stack.size() > 0 :
 		
 		if number_ship == 0:
@@ -487,9 +492,12 @@ func csp( flag_position , number_ship , map ):
 		
 		pass
 	
+	print("could not place ships")
 	emit_signal("not_ship_placement")
 
 func _on_world_not_ship_placement():
 	
 	print("could not place all the ships")
+	init(1  , 10 , 10 )
+	
 	pass # Replace with function body.
