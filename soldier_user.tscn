@@ -60,6 +60,7 @@ script = ExtResource( 7 )
 scale = Vector2( 0.098546, 0.0998039 )
 frames = SubResource( 1 )
 animation = "speed1"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -76,18 +77,14 @@ playback_speed = 6.0
 frame = 0
 
 [node name="left" parent="." instance=ExtResource( 13 )]
-position = Vector2( 0, 0 )
 rotation = 3.14159
 scale = Vector2( 1, 6 )
 
 [node name="right" parent="." instance=ExtResource( 12 )]
-position = Vector2( 0, 0 )
 
 [node name="down" parent="." instance=ExtResource( 14 )]
-position = Vector2( 0, 0 )
 
 [node name="up" parent="." instance=ExtResource( 15 )]
-position = Vector2( 0, 0 )
 
 [node name="head" parent="." instance=ExtResource( 17 )]
 position = Vector2( 46, 0 )

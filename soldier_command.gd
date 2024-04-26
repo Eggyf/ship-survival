@@ -186,7 +186,7 @@ func change_time():
 
 	pass
 
-func change_direction(action , x , y):
+func change_direction(action , x=30 , y=30):
 	
 	$AnimatedSprite.animation = "speed1"
 	

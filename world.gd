@@ -78,7 +78,7 @@ func _ready():
 	player = preload("res://player.tscn")
 	
 	print("locating ships")
-	init(  1  , 5 , 5 , Vector2(0,0))
+	init(  1  , 10 , 10 , Vector2(0,0))
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	
@@ -308,28 +308,22 @@ func draw_flags():
 		return {"red":right_flag , "blue": left_flag }
 	pass
 
-func is_bussy(bussy_cell_list,row,column):
-	
-	for cell in bussy_cell_list:
-		
-		if cell["row"] == row and cell["column"]: return true
-		
-	return false
-
 #--------------------------Ship placement___________________
 # csp restrictions
-func is_valid_ship_position( row,column,matrix , bussy_cell_list ): 
+func is_valid_ship_position( row,column,matrix ): 
 	
 	if row - 1 < 0 or row + 1 > matrix.size() - 1 :
 		return false
 	
 	if column - 1 < 0 or column + 1 > matrix[0].size() - 1 :
 		return false
-		
+	
 	for i in range(-1,2):
 		for j in range(-1,2):
 			
-			if not matrix[ row + i][ column + j]  or is_bussy( bussy_cell_list , row + i , column + j ):
+			var matrix_row  = matrix[ row + i]
+			var cell = matrix_row[ column + j]
+			if not cell :
 				return false
 			
 	return true
@@ -353,33 +347,33 @@ func bussy_flag_cell( flag_pos ):
 
 func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders , user):
 	
-	var blue_bussy_flags = bussy_flag_cell(blue)
-	var red_bussy_flags = bussy_flag_cell(red)
-	var bussy_cells = blue_bussy_flags + red_bussy_flags
-	
-	# draw and locate user soldiers
-	var result = csp( blue,number_ally , bussy_cells )
-	var ally_list = result["new"]
-	bussy_cells += result["bussy_cell"]
-	list_of_instance_of_player_soldiers = draw_ships( ally_list , player_soldier )
+	var map = copy_matrix()
 	
 	# locate player
-	var user_result = csp(blue,1,bussy_cells)
+	var user_result = csp(blue,1 , map )
 	var user_pos = user_result["new"]
-	bussy_cells += user_result["bussy_cell"]
+	map = user_result["map"]
+	var start = user_result["start"]
 	draw_ships(user_pos,player)
+	
+	# draw and locate user soldiers
+	var result = csp( start ,number_ally , map )
+	var ally_list = result["new"]
+	map = result["map"]
+	list_of_instance_of_player_soldiers = draw_ships( ally_list , player_soldier )
 	
 	var opponent = [ ]
 	for command in range(0,number_of_commanders):
 		
 		# locate commander
-		var my_result = csp( red , 1 , bussy_cells )
-		bussy_cells += my_result["bussy_cell"]
+		var my_result = csp( red , 1  , map )
+		map = my_result["map"]
 		var boss = my_result["new"]
+		var group_start = my_result["start"]
 		
 		#locate commander soldiers
-		var new_result = csp(red, number_enemy_per_commander , bussy_cells )
-		bussy_cells += new_result["bussy_cell"]
+		var new_result = csp( group_start , number_enemy_per_commander , map )
+		map = new_result["map"]
 		var enemy_list = new_result["new"]
 		
 		opponent.append( { "command": boss , "soldiers": enemy_list  } )
@@ -408,74 +402,92 @@ func draw_ships( list_of_ships ,ship_type ):
 		
 	return list_instance
 
-func neighborhood( row , column):
+func is_visited(row,column,visited):
+	
+	for cell in visited:
+		if cell["row"] == row  and cell["column"] == column:
+			return true
+	return false
+
+func neighborhood( row , column , matrix , visited):
 	
 	var neighborhood_matrix = []
 	for i in range(-1,2):
-		var row_neighborhood = []
+		
+		if row + i == matrix.size() or row + i < 0: continue
+		
 		for j in range(-1,2):
 			
-			row_neighborhood.append( { "row":row + i ,"column":column + j} )
+			if column + j == matrix.size() or column + j < 0 : continue
 			
-		neighborhood_matrix.append(row_neighborhood)
+			if matrix[row+i][column+j] and not is_visited(row+i,column+j,visited):
+				neighborhood_matrix.append( { "row":row + i ,"column":column + j} )
 		
 	return neighborhood_matrix
 
-func set_ship_bussy_cells( row,column ):
+func set_ship_bussy_cells( row,column,matrix ):
 	
-	var list = []
 	for i in range(-1,2):
 		for j in range(-1,2):
-			list.append( { "row": row + i, "column":column+j } )
+			var my_row = matrix[ row + i ]
+			var cell =  my_row[ column + j ]
+			matrix[row + i][ column + j ] = false
 			
-	return list
+	return matrix
 
-func csp( flag_position , number_ship , bussy_cell ):
+func copy_matrix():
 	
+	var new_copy = []
+	
+	for row in my_map:
+		var my_row = []
+		for column in row:
+			my_row.append(column)
+		
+		new_copy.append(my_row)
+	
+	return new_copy
+
+func set_flag_in_map(flag_row,flag_column,map):
+	
+	map[flag_row][flag_column] = false
+	map[flag_row - 1][flag_column] = false
+	map[flag_row][flag_column - 1] = false
+	map[flag_row - 1][flag_column - 1] = false
+	
+	return map
+
+func csp( flag_position , number_ship , map ):
+	
+	var visited = []
 	var new_list = []
-	var my_neighbors = neighborhood( flag_position["row"] , flag_position["column"] )
-	var stack = [ my_neighbors ]
-	var expanded_nodes = []
+	map = set_flag_in_map(flag_position["row"],flag_position["column"],map)
+	var stack = neighborhood( flag_position["row"] , flag_position["column"] ,map ,visited)
 	
-	var i = 0
-	while i <= stack.size() * stack.size() :
+	while stack.size() > 0 :
 		
 		if number_ship == 0:
-			return {"bussy_cell": bussy_cell , "new": new_list}
-		
-		var neighbor = stack[i]
-		
-		for row in neighbor:
+			return {"map": map , "new": new_list , "start":stack[0]}
+	
+		var cell = stack[0]
+		if is_valid_ship_position(cell["row"],cell["column"] , map ):
 			
-			for cell in row :
-				
-				if is_valid_ship_position(cell["row"],cell["column"] , my_map , bussy_cell ):
-					
-					new_list.append(cell)
-					bussy_cell += set_ship_bussy_cells(cell["row"],cell["column"])
-					my_neighbors = neighborhood(cell["row"],cell["column"])
-					stack.append(my_neighbors)
-					stack.remove(0)
-					number_ship -= 1
-					break
+			new_list.append(cell)
 			
-				if not is_expanded( cell , expanded_nodes ):
-					my_neighbors = neighborhood(cell["row"],cell["column"])
-					expanded_nodes.append(cell)
-					stack.append(my_neighbors)
-				
+			map = set_ship_bussy_cells( cell["row"] , cell["column"] , map )
+			stack += neighborhood( cell["row"], cell["column"] , map , visited)
+			stack.remove(0)
+			number_ship -= 1
+			pass
+		
+		stack += neighborhood(cell["row"],cell["column"] , map , visited)
+		
+		visited.append(stack[0])
 		stack.remove(0)
-		i += 1
+		
 		pass
 	
 	emit_signal("not_ship_placement")
-
-func is_expanded( cell , list_nodes_expanded ):
-	
-	for item in list_nodes_expanded:
-		if item["row"] == cell["row"] and item["column"] == cell["column"]: return true
-	
-	return false
 
 func _on_world_not_ship_placement():
 	
