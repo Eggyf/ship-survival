@@ -1,4 +1,0 @@
-[gd_scene format=2]
-
-[node name="head_south_est" type="Position2D"]
-position = Vector2( -13, 30 )

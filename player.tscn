@@ -13,7 +13,7 @@
 [ext_resource path="res://ship_collision_animation.tscn" type="PackedScene" id=11]
 [ext_resource path="res://ship_collision.tscn" type="PackedScene" id=12]
 [ext_resource path="res://direction_collision.tscn" type="PackedScene" id=13]
-[ext_resource path="res://head_west.tscn" type="PackedScene" id=17]
+[ext_resource path="res://head_east.tscn" type="PackedScene" id=18]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -72,9 +72,6 @@ frame = 0
 
 [node name="ship_collision_animation" parent="." instance=ExtResource( 11 )]
 
-[node name="head" parent="." instance=ExtResource( 17 )]
-position = Vector2( 44, -1 )
-
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( -43, 1 )
 scale = Vector2( 0.181, 0.14 )
@@ -84,6 +81,10 @@ smoothing_enabled = true
 
 [node name="direction_collision" parent="." instance=ExtResource( 13 )]
 
+[node name="head" parent="." instance=ExtResource( 18 )]
+position = Vector2( 43, -1 )
+
 [connection signal="area_entered" from="." to="." method="_on_player_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]
 [connection signal="animation_finished" from="ship_collision_animation" to="." method="_on_ship_collision_animation_animation_finished"]
+[connection signal="restart_position" from="direction_collision" to="." method="_on_direction_collision_restart_position"]

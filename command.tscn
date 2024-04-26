@@ -59,6 +59,7 @@ playback_speed = 6.0
 scale = Vector2( 0.181163, 0.140159 )
 frames = SubResource( 1 )
 animation = "speed1"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -235,3 +235,9 @@ func _on_ship_collision_animation_animation_finished(anim_name):
 func _on_explotion_animation_animation_finished(anim_name):
 	$explotion.hide()
 	pass # Replace with function body.
+
+func _on_direction_collision_restart_position():
+	
+	global_position = $direction_collision.last_avaliable_pos
+	
+	pass # Replace with function body.
