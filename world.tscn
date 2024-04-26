@@ -64,6 +64,7 @@ position = Vector2( 48, 44 )
 
 [node name="red_flag" parent="." instance=ExtResource( 14 )]
 
+[connection signal="not_ship_placement" from="." to="." method="_on_world_not_ship_placement"]
 [connection signal="tree_exited" from="." to="." method="_on_world_tree_exited"]
 [connection signal="finished" from="background_sound" to="." method="_on_background_sound_finished"]
 [connection signal="finished" from="background_sound" to="." method="_on_warrior_medium_finished"]

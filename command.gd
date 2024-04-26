@@ -14,6 +14,7 @@ var enemy_detected = false
 var enemy_list = []
 var shot_avaliable = false
 var ship_name
+var my_soldiers = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

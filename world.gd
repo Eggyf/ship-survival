@@ -48,6 +48,7 @@ var list_of_instance_of_player_soldiers = []
 var commander_list = []
 var left_flag
 var right_flag
+signal not_ship_placement
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -73,7 +74,6 @@ func _ready():
 	enemy_soldier = preload("res://soldier_command.tscn")
 	player_soldier = preload("res://soldier_user.tscn")
 	
-	instance_ship(Vector2(200,200),commander)
 	init(  1  , 5 , 5 , Vector2(0,0))
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
@@ -135,6 +135,8 @@ func init(commander_number , enemy_soldier_number , player_soldiers_number , pla
 	var flags = draw_flags()
 	var blue = flags["blue"]
 	var red = flags["red"]
+	
+	locate_ships( 3 , 3 , blue , red , 1 )
 	
 	pass
 
@@ -267,9 +269,6 @@ func locate_flags():
 	var right = best_hole( int(my_map.size()* 2 / 3) )
 	var right_flag = generate_right_flag(right)
 	
-	print( "left:", left_flag )
-	print( "right:" ,right_flag )
-
 	return { "left": left_flag, "right": right_flag }
 
 func is_valid_position(matrix , row,column):
@@ -307,45 +306,137 @@ func is_bussy(bussy_cell_list,row,column):
 # csp restrictions
 func is_valid_ship_position( row,column,matrix , bussy_cell_list ): 
 	
-	if row - 2 < matrix.size() or row + 2 > matrix.size()  :
+	if row - 2 < 0 or row + 2 > matrix.size()  :
 		return false
 	
-	if column - 2 < matrix[0].size() or column + 2 > matrix[0].size()  :
+	if column - 2 < 0 or column + 2 > matrix[0].size()  :
 		return false
-	
-	if (left_flag["row"] == row and left_flag["column"] == column ) or \
-	   (right_flag["row"] == row and right_flag["column"] == column): return false
 		
 	for i in range(-1,1):
 		for j in range(-1,1):
 			
-			if  not matrix[ row + i][ column + j] and not is_bussy( bussy_cell_list , row , column ):
+			if  not matrix[ row + i][ column + j] or  is_bussy( bussy_cell_list , row , column ):
 				return false
 			
 	return true
 
-func locate_ships( number_ally , number_enemy , blue ,red ):
+func bussy_flag_cell( flag_pos ):
 	
-	var ally_list = csp( blue,number_ally , [] )
-	var enemy_list = csp( red,number_enemy , ally_list )
+	return [ 
+		flag_pos , 
+		{ "row": flag_pos["row"] - 1 , "column": flag_pos["column"] } ,
+		{ "row": flag_pos["row"] , "column": flag_pos["column"] + 1 } ,
+		{ "row": flag_pos["row"] - 1 , "column": flag_pos["column"] + 1 } ,
+	]
+
+func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders):
 	
-	list_of_instance_of_player_soldiers = draw_ships(ally_list)
-	list_of_instance_of_enemy_soldiers = draw_ships(enemy_list)
+	var blue_bussy_flags = bussy_flag_cell(blue)
+	var red_bussy_flags = bussy_flag_cell(red)
+	var bussy_cells = blue_bussy_flags + red_bussy_flags
+	
+	var result = csp( blue,number_ally , bussy_cells )
+	var ally_list = result["new"]
+	bussy_cells += result["bussy_cell"]
+	list_of_instance_of_player_soldiers = draw_ships( ally_list , player_soldier )
+	
+	var opponent = [ ]
+	for command in range(0,number_of_commanders):
+		
+		# locate commander
+		var my_result = csp( red , 1 , bussy_cells )
+		bussy_cells += my_result["bussy_cell"]
+		var boss = my_result["new"]
+		
+		#locate commander soldiers
+		var new_result = csp(red, number_enemy_per_commander , bussy_cells )
+		bussy_cells += new_result["bussy_cell"]
+		var enemy_list = new_result["new"]
+		
+		opponent.append( { "command": boss , "soldiers": enemy_list  } )
+	
+	#draw enemies
+	for group in opponent:
+		
+		commander_list += draw_ships( group["command"] , commander )
+		list_of_instance_of_enemy_soldiers += draw_ships( group["soldiers"] , enemy_soldier )
+		
+		commander_list[-1].my_soldiers = list_of_instance_of_enemy_soldiers
+		
+		pass
+	
 	pass
 
-func draw_ships( list_of_ships ):
+func draw_ships( list_of_ships ,ship_type ):
 	
 	var list_instance = []
 	for ship in list_of_ships:
 		
-		var pos = Vector2( (ship["column"] + 1) * 30 + 15 , (ship["row"] + 1) * 30 + 15  )
-		ship = instance_ship( pos, ship["ship"] )
-		list_instance.append(ship)
+		var pos = Vector2( (ship["column"]) * 30 + 15 , (ship["row"]) * 30 + 15  )
+		var my_ship = instance_ship( pos, ship_type )
+		list_instance.append(my_ship)
 		
 	return list_instance
 
+func neighborhood( row , column ):
+	
+	var neighborhood_matrix = []
+	for i in range(-1,2):
+		var row_neighborhood = []
+		for j in range(-1,2):
+			
+			row_neighborhood.append( { "row":row + i ,"column":column + j} )
+			
+		neighborhood_matrix.append(row_neighborhood)
+		
+	return neighborhood_matrix
+
+func set_ship_bussy_cells( row,column ):
+	
+	var list = []
+	for i in range(-1,1):
+		for j in range(-1,1):
+			list.append( { "row": row + i, "column":column+j } )
+			
+	return list
+
 func csp( flag_position , number_ship , bussy_cell ):
 	
+	var new_list = []
+	var my_neighbors = neighborhood( flag_position["row"] , flag_position["column"]  )
+	var stack = [ my_neighbors ]
 	
+	var i = 0
+	while stack.size() != 0:
+		
+		if number_ship == 0:
+			return {"bussy_cell": bussy_cell , "new": new_list}
+		
+		var neighbor = stack[i]
+			
+		for row in neighbor:
+			
+			for cell in row :
+				
+				if is_valid_ship_position(cell["row"],cell["column"] , my_map , bussy_cell ):
+					
+					new_list.append(cell)
+					bussy_cell += set_ship_bussy_cells(cell["row"],cell["column"])
+					my_neighbors = neighborhood(cell["row"],cell["column"])
+					stack.append(my_neighbors)
+					stack.remove(0)
+					number_ship -= 1
+					break
+			
+				my_neighbors = neighborhood(cell["row"],cell["column"])
+				stack.append(my_neighbors)
+		
+		i += 1
+		pass
 	
-	return bussy_cell
+	emit_signal("not_ship_placement")
+
+func _on_world_not_ship_placement():
+	
+	print("could not place all the ships")
+	pass # Replace with function body.
