@@ -1,9 +1,26 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://game_over.gd" type="Script" id=2]
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+# Called when the node enters the scene tree for the first time.
+
+onready var visible_char = $RichTextLabel.text.length()
+var killed= false
+func set_game_over(pos):
+	
+	self.position = pos
+	print(\"game over:\",pos)
+	$Camera2D.current = true
+	pass
+
+func _on_Timer_timeout():
+	
+	pass # Replace with function body.
+"
 
 [node name="game_over" type="Node2D"]
-script = ExtResource( 2 )
+script = SubResource( 1 )
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.5
@@ -15,7 +32,7 @@ margin_bottom = 14.0
 rect_scale = Vector2( 5, 5 )
 bbcode_enabled = true
 bbcode_text = "[color=red]GAME OVER[/color]"
-visible_characters = 8
+visible_characters = 0
 percent_visible = 0.888889
 text = "GAME OVER"
 scroll_active = false
