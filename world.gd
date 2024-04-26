@@ -1,5 +1,6 @@
 extends Node2D
 
+var player
 var commander
 var enemy_soldier 
 var player_soldier
@@ -49,6 +50,7 @@ var commander_list = []
 var left_flag
 var right_flag
 signal not_ship_placement
+var last_player_pos = Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -73,6 +75,7 @@ func _ready():
 	commander = preload("res://command.tscn")
 	enemy_soldier = preload("res://soldier_command.tscn")
 	player_soldier = preload("res://soldier_user.tscn")
+	player = preload("res://player.tscn")
 	
 	print("locating ships")
 	init(  1  , 5 , 5 , Vector2(0,0))
@@ -99,6 +102,24 @@ func _process(delta):
 	if $player:
 		$TextureRect.set_global_position($player.global_position - (screen_size/2))
 		$background_sound.global_position = $player.global_position - (screen_size/2)
+		last_player_pos = $player.global_position
+	else:
+		# GAME OVER
+		game_over()
+		
+	pass
+
+func game_over():
+	
+	$Camera2D.current = true
+	$Camera2D.global_position = last_player_pos
+	$TextureRect.set_global_position(last_player_pos - (screen_size/2))
+	$background_sound.global_position = last_player_pos - (screen_size/2)
+		
+	var label_game_over = preload("res://label_game_over.tscn")
+	var game_over = label_game_over.instance()
+	game_over.set_global_position( last_player_pos)
+	add_child(game_over)
 	
 	pass
 
@@ -119,17 +140,7 @@ func quite_map():
 	
 	pass
 
-func instance_ship(pos, intance_ship_type):
-	
-	var ship = intance_ship_type.instance()
-	add_child(ship)
-	ship.start_position( pos , length_x ,length_y )
-	
-	return ship
-
-func init(commander_number , enemy_soldier_number , player_soldiers_number , player_position ):
-
-	$player.start_position(player_position , length_x , length_y )
+func init(commander_number , enemy_soldier_number , player_soldiers_number , user ):
 	
 	draw_map(my_map)
 	
@@ -137,7 +148,7 @@ func init(commander_number , enemy_soldier_number , player_soldiers_number , pla
 	var blue = flags["blue"]
 	var red = flags["red"]
 	
-	locate_ships( 3 , 3 , blue , red , 1 )
+	locate_ships( player_soldiers_number , enemy_soldier_number , blue , red , commander_number , user  )
 	
 	pass
 
@@ -171,6 +182,7 @@ func _on_world_tree_exited():
 	connector.killServer(client)
 	pass # Replace with function body.
 
+#_____________Flag placemente____________
 func count_blocks(matrix):
 	
 	var count = 0
@@ -304,6 +316,7 @@ func is_bussy(bussy_cell_list,row,column):
 		
 	return false
 
+#--------------------------Ship placement___________________
 # csp restrictions
 func is_valid_ship_position( row,column,matrix , bussy_cell_list ): 
 	
@@ -321,6 +334,14 @@ func is_valid_ship_position( row,column,matrix , bussy_cell_list ):
 			
 	return true
 
+func instance_ship(pos, intance_ship_type):
+	
+	var ship = intance_ship_type.instance()
+	add_child(ship)
+	ship.start_position( pos , length_x ,length_y )
+	
+	return ship
+
 func bussy_flag_cell( flag_pos ):
 	
 	return [ 
@@ -330,16 +351,23 @@ func bussy_flag_cell( flag_pos ):
 		{ "row": flag_pos["row"] - 1 , "column": flag_pos["column"] + 1 } ,
 	]
 
-func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders):
+func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders , user):
 	
 	var blue_bussy_flags = bussy_flag_cell(blue)
 	var red_bussy_flags = bussy_flag_cell(red)
 	var bussy_cells = blue_bussy_flags + red_bussy_flags
 	
+	# draw and locate user soldiers
 	var result = csp( blue,number_ally , bussy_cells )
 	var ally_list = result["new"]
 	bussy_cells += result["bussy_cell"]
 	list_of_instance_of_player_soldiers = draw_ships( ally_list , player_soldier )
+	
+	# locate player
+	var user_result = csp(blue,1,bussy_cells)
+	var user_pos = user_result["new"]
+	bussy_cells += user_result["bussy_cell"]
+	draw_ships(user_pos,player)
 	
 	var opponent = [ ]
 	for command in range(0,number_of_commanders):
@@ -374,7 +402,6 @@ func draw_ships( list_of_ships ,ship_type ):
 	
 	for ship in list_of_ships:
 		
-		print(ship)
 		var pos = Vector2( ship["column"] * 30 + 15, ship["row"] * 30 + 15)
 		var my_ship = instance_ship( pos, ship_type )
 		list_instance.append(my_ship)
@@ -433,11 +460,10 @@ func csp( flag_position , number_ship , bussy_cell ):
 					break
 			
 				if not is_expanded( cell , expanded_nodes ):
-					
 					my_neighbors = neighborhood(cell["row"],cell["column"])
 					expanded_nodes.append(cell)
 					stack.append(my_neighbors)
-		
+				
 		stack.remove(0)
 		i += 1
 		pass
