@@ -370,6 +370,7 @@ func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number
 	map = result["map"]
 	list_of_instance_of_player_soldiers = draw_ships( ally_list , player_soldier )
 	my_commander.my_soldiers = list_of_instance_of_player_soldiers
+	your_commander = my_commander
 	
 	var opponent = [ ]
 	for command in range(0,number_of_commanders):
