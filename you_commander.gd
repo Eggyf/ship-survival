@@ -196,7 +196,6 @@ func ship_explotion():
 	$ship_collision_animation.play("destruction")
 	$CollisionShape2D.call_deferred("set", "disabled", true)
 	emit_signal("kill")
-	call_deferred("queue_free")
 	pass
 
 func rocket_explotion():

@@ -11,6 +11,11 @@ var targets = []
 var ally_detection = []
 var ally = []
 
+func set_enemy(list):
+	targets = list
+func set_ally(list):
+	ally_detection = list
+
 func _on_radar_area_entered(area):
 	
 	for item in targets:

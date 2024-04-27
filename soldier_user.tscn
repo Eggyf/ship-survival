@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://resource/user/user_soldier/ship_soldier_left.png" type="Texture" id=1]
 [ext_resource path="res://resource/user/user_soldier/ship_soldier_right.png" type="Texture" id=2]
@@ -11,7 +11,6 @@
 [ext_resource path="res://explotion.tscn" type="PackedScene" id=9]
 [ext_resource path="res://ship_collision.tscn" type="PackedScene" id=10]
 [ext_resource path="res://ship_collision_animation.tscn" type="PackedScene" id=11]
-[ext_resource path="res://radar.tscn" type="PackedScene" id=16]
 [ext_resource path="res://head_east.tscn" type="PackedScene" id=17]
 [ext_resource path="res://direction_collision.tscn" type="PackedScene" id=18]
 [ext_resource path="res://life_tag.tscn" type="PackedScene" id=19]
@@ -74,10 +73,6 @@ frame = 0
 [node name="head" parent="." instance=ExtResource( 17 )]
 position = Vector2( 46, 0 )
 
-[node name="radar" parent="." instance=ExtResource( 16 )]
-position = Vector2( 6.10352e-05, 0 )
-collision_mask = 6
-
 [node name="attack_rate" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
@@ -90,8 +85,4 @@ position = Vector2( -18, -42 )
 [connection signal="area_entered" from="." to="." method="_on_soldier_user_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]
 [connection signal="animation_finished" from="ship_collision_animation" to="." method="_on_ship_collision_animation_animation_finished"]
-[connection signal="ally_in" from="radar" to="." method="_on_radar_ally_in"]
-[connection signal="ally_leave" from="radar" to="." method="_on_radar_ally_leave"]
-[connection signal="enemy" from="radar" to="." method="_on_radar_enemy"]
-[connection signal="enemy_exited" from="radar" to="." method="_on_radar_enemy_exited"]
 [connection signal="timeout" from="attack_rate" to="." method="_on_attack_rate_timeout"]

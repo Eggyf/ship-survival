@@ -16,14 +16,21 @@ var ship_name
 var time = 0 # time between every key press of the type ( up, down , left , right )
 var ally = []
 signal killed
+var radar = preload("res://radar.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	hide()
 	$life_tag.set_life(life)
-	$radar.targets = ["commander" , "enemy"]
-	$radar.ally_detection = ["friend","player","my_commander"]
+	radar = radar.instance()
+	radar.set_enemy(["commander" , "enemy"])
+	radar.set_ally(["friend","player","my_commander"])
+	radar.connect("ally_in", self, "_on_radar_ally_in")
+	radar.connect("ally_leave", self, "_on_radar_ally_leave")
+	radar.connect("enemy", self, "_on_radar_enemy")
+	radar.connect("enemy_exited", self, "_on_radar_ally_leave")
+	
 	ship_name = id.hash()
 	
 	pass
@@ -194,7 +201,6 @@ func ship_explotion():
 	$ship_collision_animation.play("destruction")
 	$CollisionShape2D.call_deferred("set", "disabled", true)
 	emit_signal("killed")
-	call_deferred("queue_free")
 	
 	pass
 
