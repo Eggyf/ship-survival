@@ -21,13 +21,14 @@ func _on_radar_area_entered(area):
 	for item in targets:
 		
 		if item == area.id:
-			
 			enemy_list.append( area )
 			emit_signal("enemy")
 	
 	for item in ally_detection:
 		
 		if item == area.id:
+			var area_id = area.id
+			var parent = get_parent().id
 			ally.append( area )
 			emit_signal("ally_in")
 			

@@ -39,6 +39,8 @@ color = Color( 0.913725, 0.698039, 0.054902, 1 )
 color_ramp = SubResource( 4 )
 
 [node name="you_commander" type="Area2D"]
+collision_layer = 4100
+collision_mask = 30719
 script = ExtResource( 10 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -86,6 +88,12 @@ autostart = true
 
 [node name="life_tag" parent="." instance=ExtResource( 9 )]
 position = Vector2( -20, -50 )
+
+[node name="shot_eye" type="RayCast2D" parent="."]
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 500 )
+collision_mask = 9
 
 [connection signal="area_entered" from="." to="." method="_on_you_commander_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]

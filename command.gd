@@ -134,11 +134,15 @@ func face_to_enemy( vector: Vector2 ):
 func defend_position( vector ):
 	
 	var direction = face_to_enemy(vector)
-	if shot_avaliable:
+	if shot_avaliable and no_shot():
 		shot( direction )
 		shot_avaliable = false
-		
-	pass	
+	
+	pass
+
+func no_shot():
+	print($shot_eye.get_collider())
+	return not $shot_eye.is_colliding()
 	
 func fill_life():
 		
@@ -193,7 +197,7 @@ func ship_explotion():
 	$AnimatedSprite.hide()
 	$ship_collision_animation.play("destruction")
 	$CollisionShape2D.call_deferred("set", "disabled", true)
-	call_deferred("queue_free")
+	emit_signal("killed")
 	
 	pass
 

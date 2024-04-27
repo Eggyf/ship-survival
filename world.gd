@@ -51,7 +51,6 @@ var list_of_instance_of_player_soldiers = []
 var commander_list = []
 var left_flag
 var right_flag
-signal not_ship_placement
 var last_player_pos = Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
@@ -182,7 +181,7 @@ func _on_world_tree_exited():
 	connector.killServer(client)
 	pass # Replace with function body.
 
-#_____________Flag placemente____________
+#_____________Flag placement____________
 func count_blocks(matrix):
 	
 	var count = 0
@@ -350,41 +349,42 @@ func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number
 	var map = copy_matrix()
 	
 	#locate your_commander
-	var flag = { "row":blue["row"] , "column":blue["column"] , "flag":true }
-	var my_commander_result = csp( flag , 1  , map )	
+	map = set_flag_in_map( blue["row"] , blue["column"] ,map )
+	var stack = neighborhood(blue["row"] , blue["column"] ,map , [] )
+	var my_commander_result = csp( 1  , map , [] , stack )
 	map = my_commander_result["map"]
 	var my_boss_pos = my_commander_result["new"]
-	var commander_start = { "row": my_commander_result["start"]["row"] , "column": my_commander_result["start"]["column"] , "flag":false }
 	var my_commander = draw_ships(my_boss_pos,your_commander)[0]
 	
 	# locate player
-	var user_result = csp(commander_start,1 , map )
+	var user_result = csp( 1 , map , my_commander_result["visited"] , my_commander_result["stack"] )
 	var user_pos = user_result["new"]
 	map = user_result["map"]
-	var start = { "row": user_result["start"]["row"] , "column": user_result["start"]["column"] , "flag": false }
 	player = draw_ships(user_pos,player)[0]
 	
 	# draw and locate user soldiers
-	var result = csp( start ,number_ally , map )
+	var result = csp( number_ally , map ,user_result["visited"] , user_result["stack"])
 	var ally_list = result["new"]
 	map = result["map"]
 	list_of_instance_of_player_soldiers = draw_ships( ally_list , player_soldier )
+	
+	# set soldiers to my_commander
 	my_commander.my_soldiers = list_of_instance_of_player_soldiers
 	your_commander = my_commander
 	
 	var opponent = [ ]
+	stack = neighborhood(red["row"] , red["column"] ,map , [] )
 	for command in range(0,number_of_commanders):
 		
 		# locate commander
-		flag = { "row":red["row"] , "column":red["column"] , "flag":true }
-		var my_result = csp( flag , 1  , map )
+		map = set_flag_in_map( red["row"] , red["column"] ,map )
+		var my_result = csp( 1  , map , [] , stack )
 		map = my_result["map"]
 		var boss = my_result["new"]
-		var group_start = my_result["start"]
+
 		
 		#locate commander soldiers
-		group_start = { "row": group_start["row"] , "column": group_start["column"] , "flag": false }
-		var new_result = csp( group_start , number_enemy_per_commander , map )
+		var new_result = csp( number_enemy_per_commander , map , my_result["visited"] , my_result["stack"] )
 		map = new_result["map"]
 		var enemy_list = new_result["new"]
 		
@@ -433,7 +433,7 @@ func neighborhood( row , column , matrix , visited):
 			if column + j == matrix.size() or column + j < 0 : continue
 			
 			if matrix[row+i][column+j] and not is_visited(row+i,column+j,visited):
-				neighborhood_matrix.append( { "row":row + i ,"column":column + j} )
+				neighborhood_matrix.append( { "row":row + i ,"column":column + j } )
 		
 	return neighborhood_matrix
 
@@ -469,22 +469,16 @@ func set_flag_in_map(flag_row,flag_column,map):
 	
 	return map
 
-func csp( flag_position , number_ship , map ):
+func csp( number_ship , map , visited_ , stack_ ):
 	
-	var visited = []
+	var visited = visited_
 	var new_list = []
-	var stack = []
-	
-	if flag_position["flag"]:
-		map = set_flag_in_map(flag_position["row"],flag_position["column"],map)
-		stack = neighborhood( flag_position["row"] , flag_position["column"] ,map ,visited)
-	else:
-		stack = neighborhood( flag_position["row"] , flag_position["column"] ,map ,visited)
+	var stack = stack_
 		
 	while stack.size() > 0 :
 		
 		if number_ship == 0:
-			return {"map": map , "new": new_list , "start":stack[0]}
+			return {"map": map , "new": new_list , "stack":stack , "visited":visited }
 	
 		var cell = stack[0]
 		if is_valid_ship_position(cell["row"],cell["column"] , map ):
@@ -504,10 +498,6 @@ func csp( flag_position , number_ship , map ):
 		
 		pass
 	
-	emit_signal("not_ship_placement")
-
-func _on_world_not_ship_placement():
 	print("reloading scene")
 	get_tree().reload_current_scene()
 	
-	pass # Replace with function body.

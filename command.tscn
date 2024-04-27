@@ -59,6 +59,7 @@ script = ExtResource( 8 )
 scale = Vector2( 0.181163, 0.140159 )
 frames = SubResource( 1 )
 animation = "speed1"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -87,6 +88,14 @@ autostart = true
 
 [node name="life_tag" parent="." instance=ExtResource( 14 )]
 position = Vector2( -16, -37 )
+
+[node name="shot_eye" type="RayCast2D" parent="."]
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 500 )
+collision_mask = 4102
+collide_with_areas = true
+collide_with_bodies = false
 
 [connection signal="area_entered" from="." to="." method="_on_command_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]
