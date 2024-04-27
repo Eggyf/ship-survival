@@ -2,9 +2,11 @@ extends Area2D
 
 signal captured(winner)
 var id = "red_flag"
+var coordenate
 
 func set_position(pos):
 	global_position = pos
+	coordenate = { "row": pos.x / 30 , "column": (pos.y / 30 ) }
 	pass
 
 func _on_red_flag_area_entered(area):

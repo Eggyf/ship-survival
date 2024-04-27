@@ -362,7 +362,7 @@ func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number
 	var user_pos = user_result["new"]
 	map = user_result["map"]
 	var start = { "row": user_result["start"]["row"] , "column": user_result["start"]["column"] , "flag": false }
-	draw_ships(user_pos,player)
+	player = draw_ships(user_pos,player)[0]
 	
 	# draw and locate user soldiers
 	var result = csp( start ,number_ally , map )

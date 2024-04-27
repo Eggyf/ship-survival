@@ -58,7 +58,6 @@ position = Vector2( -0.483826, 0 )
 scale = Vector2( 0.151062, 0.118333 )
 frames = SubResource( 1 )
 animation = "speed1"
-frame = 1
 playing = true
 offset = Vector2( -133, 0 )
 flip_v = true
@@ -95,6 +94,8 @@ position = Vector2( -18, -37 )
 [connection signal="area_entered" from="." to="." method="_on_enemy_soldier_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]
 [connection signal="animation_finished" from="ship_collision_animation" to="." method="_on_ship_collision_animation_animation_finished"]
+[connection signal="ally_in" from="radar" to="." method="_on_radar_ally_in"]
+[connection signal="ally_leave" from="radar" to="." method="_on_radar_ally_leave"]
 [connection signal="enemy" from="radar" to="." method="_on_radar_enemy"]
 [connection signal="enemy_exited" from="radar" to="." method="_on_radar_enemy_exited"]
 [connection signal="timeout" from="attack_rate" to="." method="_on_attack_rate_timeout"]

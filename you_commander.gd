@@ -15,6 +15,8 @@ var enemy_list = []
 var shot_avaliable = false
 var ship_name
 var my_soldiers = []
+var ally = []
+signal kill
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,6 +24,8 @@ func _ready():
 	hide()
 	$life_tag.set_life(life)
 	$radar.targets = ["commander" , "enemy"]
+	$radar.ally_detection = ["friend","player"]
+	$radar.ally
 	ship_name = id.hash()
 	
 	pass
@@ -191,7 +195,8 @@ func ship_explotion():
 	$Sprite.hide()
 	$ship_collision_animation.play("destruction")
 	$CollisionShape2D.call_deferred("set", "disabled", true)
-	
+	emit_signal("kill")
+	call_deferred("queue_free")
 	pass
 
 func rocket_explotion():
@@ -265,4 +270,14 @@ func _on_you_commander_area_entered(area):
 		ship_explotion()
 		destroy_sound()
 
+	pass # Replace with function body.
+
+func _on_radar_ally_in():
+	ally = $radar.ally
+	print("my_commander > ally detected")
+	pass # Replace with function body.
+
+func _on_radar_ally_leave():
+	ally = $radar.ally
+	print("my_commander > ally exited")
 	pass # Replace with function body.

@@ -33,7 +33,7 @@ shape = SubResource( 1 )
 scale = Vector2( 0.5, 0.5 )
 frames = SubResource( 2 )
 animation = "flag"
-frame = 3
+frame = 5
 playing = true
 
 [connection signal="area_entered" from="." to="." method="_on_Area2D_area_entered"]
