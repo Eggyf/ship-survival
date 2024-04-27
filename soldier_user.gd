@@ -38,7 +38,7 @@ func change_direction(action,x=30,y=30):
 	
 	$AnimatedSprite.animation = "speed1"
 	
-	if action == "down" and time == 0  and not $down.is_colliding() :
+	if action == "down" and time == 0  and not $direction_collision.is_colliding() :
 		if rotation_head == 90:
 			$AnimatedSprite.animation = "step_back"
 		elif rotation_head == 0 or rotation_head == 360:
@@ -50,7 +50,7 @@ func change_direction(action,x=30,y=30):
 			
 		motion.y += y
 	
-	if action == "up" and time == 0 and not $up.is_colliding():
+	if action == "up" and time == 0 and not $direction_collision.is_colliding():
 		
 		if rotation_head == 270:
 			$AnimatedSprite.animation = "step_back"
@@ -63,7 +63,7 @@ func change_direction(action,x=30,y=30):
 		
 		motion.y += - y
 	
-	if action == "left" and time == 0 and not $left.is_colliding():
+	if action == "left" and time == 0 and not $direction_collision.is_colliding():
 		
 		if rotation_head == 90:
 			$AnimatedSprite.animation = "desplace_right"
@@ -76,7 +76,7 @@ func change_direction(action,x=30,y=30):
 			
 		motion.x += - x
 	
-	if action == "right" and time == 0 and not $right.is_colliding():
+	if action == "right" and time == 0 and not $direction_collision.is_colliding():
 		
 		if rotation_head == 90:
 			$AnimatedSprite.animation = "desplace_left"
