@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://resource/Sounds/GameSounds/hq-explosion-6288.mp3" type="AudioStream" id=1]
+[ext_resource path="res://commander_dead.gd" type="Script" id=2]
+
+[node name="commander_dead" type="AudioStreamPlayer2D"]
+stream = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[connection signal="finished" from="." to="." method="_on_commander_dead_finished"]

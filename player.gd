@@ -207,29 +207,38 @@ func rocket_explotion():
 	
 	pass
 
+func destroy_sound():
+	
+	var player_dead = get_parent().player_dead.instance()
+	add_child(player_dead) 
+	player_dead.play()
+	pass
+
 func _on_player_area_entered(area):
 
 	if area.id == "enemy":
 		ship_explotion()
-		get_parent().player_dead.play()
+		destroy_sound()
 	elif area.id == "friend":
 		ship_explotion()
-		get_parent().player_dead.play()
+		destroy_sound()
 	elif area.id == "commander":
 		ship_explotion()
-		get_parent().player_dead.play()
+		destroy_sound()
 	elif area.id == "my_commander":
 		ship_explotion()
-		get_parent().ship_explotion.play()
+		destroy_sound()
 	elif area.id == "bullet":
 		life -= 20
 		rocket_explotion()
 		area.queue_free()
-		get_parent().impact.play()
+		var impact = get_parent().impact.instance()
+		add_child(impact) 
+		impact.play()
 		
 	if life <= 0 :
 		ship_explotion()
-		get_parent().player_dead.play()
+		destroy_sound()
 	
 	pass # Replace with function body.	
 

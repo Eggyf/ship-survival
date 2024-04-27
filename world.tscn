@@ -1,17 +1,17 @@
 [gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://resource/backgroud/milky-way.jpg" type="Texture" id=1]
+[ext_resource path="res://commander_dead.tscn" type="PackedScene" id=2]
 [ext_resource path="res://right_frontier.tscn" type="PackedScene" id=3]
 [ext_resource path="res://top_frontier2.tscn" type="PackedScene" id=4]
 [ext_resource path="res://world.gd" type="Script" id=5]
 [ext_resource path="res://left_frontier.tscn" type="PackedScene" id=6]
 [ext_resource path="res://top_frontier.tscn" type="PackedScene" id=7]
 [ext_resource path="res://bullet_contact.tscn" type="PackedScene" id=8]
-[ext_resource path="res://resource/Sounds/GameSounds/explosion-42132.mp3" type="AudioStream" id=9]
+[ext_resource path="res://player_dead.tscn" type="PackedScene" id=9]
 [ext_resource path="res://resource/Sounds/warrior_medium-192841.mp3" type="AudioStream" id=10]
-[ext_resource path="res://resource/Sounds/GameSounds/hq-explosion-6288.mp3" type="AudioStream" id=11]
-[ext_resource path="res://resource/Sounds/GameSounds/distant-explosion-47562.mp3" type="AudioStream" id=12]
-[ext_resource path="res://resource/Sounds/GameSounds/big-boom-202678.mp3" type="AudioStream" id=13]
+[ext_resource path="res://impact.tscn" type="PackedScene" id=11]
+[ext_resource path="res://ship_explotion.tscn" type="PackedScene" id=12]
 [ext_resource path="res://red_flag.tscn" type="PackedScene" id=14]
 [ext_resource path="res://blue_flag.tscn" type="PackedScene" id=15]
 
@@ -38,22 +38,16 @@ texture = ExtResource( 1 )
 pitch_scale = 0.72
 attenuation = 215.27
 
-[node name="ship_explotion" type="AudioStreamPlayer2D" parent="."]
-
 [node name="background_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 10 )
 
-[node name="player_dead" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 9 )
+[node name="player_dead" parent="." instance=ExtResource( 9 )]
 
-[node name="chip_explotion" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 12 )
+[node name="ship_explotion" parent="." instance=ExtResource( 12 )]
 
-[node name="commander_dead" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 11 )
+[node name="commander_dead" parent="." instance=ExtResource( 2 )]
 
-[node name="impact" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 13 )
+[node name="impact" parent="." instance=ExtResource( 11 )]
 
 [node name="blue_flag" parent="." instance=ExtResource( 15 )]
 position = Vector2( 48, 44 )
@@ -66,4 +60,3 @@ zoom = Vector2( 0.9, 0.8 )
 [connection signal="not_ship_placement" from="." to="." method="_on_world_not_ship_placement"]
 [connection signal="tree_exited" from="." to="." method="_on_world_tree_exited"]
 [connection signal="finished" from="background_sound" to="." method="_on_background_sound_finished"]
-[connection signal="finished" from="background_sound" to="." method="_on_warrior_medium_finished"]

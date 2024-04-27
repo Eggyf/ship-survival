@@ -39,7 +39,6 @@ color = Color( 0.913725, 0.698039, 0.054902, 1 )
 color_ramp = SubResource( 4 )
 
 [node name="you_commander" type="Area2D"]
-position = Vector2( 0, -2 )
 script = ExtResource( 10 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -70,12 +69,14 @@ process_material = SubResource( 2 )
 frame = 0
 
 [node name="direction_collision" parent="." instance=ExtResource( 8 )]
-position = Vector2( 0, 50 )
-scale = Vector2( 50, 50 )
+position = Vector2( -2, 0 )
 
 [node name="head_east" parent="." instance=ExtResource( 7 )]
-position = Vector2( 0, 50 )
+position = Vector2( 46, 0 )
 scale = Vector2( 50, 50 )
+__meta__ = {
+"_gizmo_extents_": 0.1
+}
 
 [node name="radar" parent="." instance=ExtResource( 6 )]
 

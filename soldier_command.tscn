@@ -58,6 +58,7 @@ position = Vector2( -0.483826, 0 )
 scale = Vector2( 0.151062, 0.118333 )
 frames = SubResource( 1 )
 animation = "speed1"
+frame = 1
 playing = true
 offset = Vector2( -133, 0 )
 flip_v = true
@@ -66,7 +67,6 @@ flip_v = true
 shape = SubResource( 2 )
 
 [node name="explotion_animation" parent="." instance=ExtResource( 9 )]
-playback_speed = 6.0
 
 [node name="explotion" parent="." instance=ExtResource( 8 )]
 

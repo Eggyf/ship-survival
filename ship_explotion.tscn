@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://resource/Sounds/GameSounds/distant-explosion-47562.mp3" type="AudioStream" id=1]
+[ext_resource path="res://ship_explotion.gd" type="Script" id=2]
+
+[node name="ship_explotion" type="AudioStreamPlayer2D"]
+stream = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[connection signal="finished" from="." to="." method="_on_ship_explotion_finished"]

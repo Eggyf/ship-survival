@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://resource/Sounds/GameSounds/explosion-42132.mp3" type="AudioStream" id=1]
+[ext_resource path="res://player_dead.gd" type="Script" id=2]
+
+[node name="player_dead" type="AudioStreamPlayer2D"]
+stream = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[connection signal="finished" from="." to="." method="_on_player_dead_finished"]

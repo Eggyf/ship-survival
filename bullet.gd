@@ -25,5 +25,8 @@ func set_direction( direction:Vector2 ):
 	
 	show()
 	self.direction = direction.normalized()
-	get_parent().bullet_contact.play()
+	var bullet_contact = get_parent().bullet_contact.instance()
+	add_child(bullet_contact) 
+	bullet_contact.play()
+	
 	pass

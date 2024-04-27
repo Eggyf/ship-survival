@@ -6,15 +6,16 @@ var enemy_soldier
 var player_soldier
 var your_commander
 var wall
+onready var bullet_contact = preload("res://bullet_contact.tscn")
+onready var commander_dead = preload("res://commander_dead.tscn")
+onready var ship_explotion = preload("res://ship_explotion.tscn")
+onready var player_dead = preload("res://player_dead.tscn")
+onready var impact = preload("res://impact.tscn")
+
 var project_path = ProjectSettings.globalize_path("res://") + "server/main.py"
 var server_global_location = project_path
-onready var bullet_contact = $bullet_contact
-onready var ship_explotion = $ship_explotion
-onready var commander_dead = $commander_dead
-onready var chip_explotion = $chip_explotion
-onready var player_dead = $player_dead
-onready var impact = $impact
 # ------server---------
+
 var host = '127.0.0.1'
 var port = 8000
 var client = StreamPeerTCP.new()
@@ -75,7 +76,7 @@ func _ready():
 	player = preload("res://player.tscn")
 	your_commander = preload("res://you_commander.tscn")
 	
-	init(  1  , 10 , 10)
+	init(  1  , 5 , 5 ) 
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	
@@ -350,7 +351,7 @@ func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number
 	
 	#locate your_commander
 	var flag = { "row":blue["row"] , "column":blue["column"] , "flag":true }
-	var my_commander_result = csp( flag , 1  , map )
+	var my_commander_result = csp( flag , 1  , map )	
 	map = my_commander_result["map"]
 	var my_boss_pos = my_commander_result["new"]
 	var commander_start = { "row": my_commander_result["start"]["row"] , "column": my_commander_result["start"]["column"] , "flag":false }
@@ -502,12 +503,10 @@ func csp( flag_position , number_ship , map ):
 		
 		pass
 	
-	print("could not place ships")
 	emit_signal("not_ship_placement")
 
 func _on_world_not_ship_placement():
 	
-	print("could not place all the ships")
-	init(1  , 10 , 10 )
+	get_tree().reload_current_scene()
 	
 	pass # Replace with function body.

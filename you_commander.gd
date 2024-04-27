@@ -188,7 +188,7 @@ func ship_explotion():
 	
 	$ship_collision.global_position = position
 	$ship_collision.show()
-	$AnimatedSprite.hide()
+	$Sprite.hide()
 	$ship_collision_animation.play("destruction")
 	$CollisionShape2D.call_deferred("set", "disabled", true)
 	
@@ -232,25 +232,37 @@ func _on_attack_rate_timeout():
 	
 	pass # Replace with function body.
 
+func destroy_sound():
+	
+	var commander_dead = get_parent().commander_dead.instance()
+	add_child(commander_dead) 
+	commander_dead.play()
+	pass
+
 func _on_you_commander_area_entered(area):
 	
 	if area.id == "enemy":
 		ship_explotion()
-		get_parent().commander_dead.play()
+		destroy_sound()
 	elif area.id == "friend":
 		ship_explotion()
-		get_parent().commander_dead.play()
+		destroy_sound()
 	elif area.id == "player":
 		ship_explotion()
-		get_parent().commander_dead.play()
+		destroy_sound()
+	elif area.id == "commmander":
+		ship_explotion()
+		destroy_sound()
 	elif area.id == "bullet":
 		life -= 20
 		area.queue_free()
 		rocket_explotion()
-		get_parent().impact.play()
+		var impact = get_parent().impact.instance()
+		add_child(impact) 
+		impact.play()
 		
 	if life <= 0 :
 		ship_explotion()
-		get_parent().commander_dead.play()
+		destroy_sound()
 
 	pass # Replace with function body.
