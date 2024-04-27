@@ -21,7 +21,7 @@ func _ready():
 	
 	hide()
 	$life_tag.set_life(life)
-	$radar.targets = ["friend" , "player"]
+	$radar.targets = ["friend" , "player" , "my_commander" ]
 	ship_name = id.hash()
 	
 	pass
@@ -213,6 +213,9 @@ func _on_command_area_entered(area):
 	elif area.id == "player":
 		ship_explotion()
 		get_parent().commander_dead.play()
+	elif area.id == "my_commander":
+		ship_explotion()
+		get_parent().ship_explotion.play()
 	elif area.id == "bullet":
 		life -= 20
 		area.queue_free()

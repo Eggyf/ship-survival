@@ -4,6 +4,7 @@ var player
 var commander
 var enemy_soldier 
 var player_soldier
+var your_commander
 var wall
 var project_path = ProjectSettings.globalize_path("res://") + "server/main.py"
 var server_global_location = project_path
@@ -72,6 +73,7 @@ func _ready():
 	enemy_soldier = preload("res://soldier_command.tscn")
 	player_soldier = preload("res://soldier_user.tscn")
 	player = preload("res://player.tscn")
+	your_commander = preload("res://you_commander.tscn")
 	
 	init(  1  , 10 , 10)
 	
@@ -341,13 +343,21 @@ func bussy_flag_cell( flag_pos ):
 		{ "row": flag_pos["row"] , "column": flag_pos["column"] + 1 } ,
 		{ "row": flag_pos["row"] - 1 , "column": flag_pos["column"] + 1 } ,
 	]
+
 func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number_of_commanders):
 	
 	var map = copy_matrix()
 	
-	# locate player
+	#locate your_commander
 	var flag = { "row":blue["row"] , "column":blue["column"] , "flag":true }
-	var user_result = csp(flag,1 , map )
+	var my_commander_result = csp( flag , 1  , map )
+	map = my_commander_result["map"]
+	var my_boss_pos = my_commander_result["new"]
+	var commander_start = { "row": my_commander_result["start"]["row"] , "column": my_commander_result["start"]["column"] , "flag":false }
+	var my_commander = draw_ships(my_boss_pos,your_commander)[0]
+	
+	# locate player
+	var user_result = csp(commander_start,1 , map )
 	var user_pos = user_result["new"]
 	map = user_result["map"]
 	var start = { "row": user_result["start"]["row"] , "column": user_result["start"]["column"] , "flag": false }
@@ -358,6 +368,7 @@ func locate_ships( number_ally , number_enemy_per_commander , blue ,red , number
 	var ally_list = result["new"]
 	map = result["map"]
 	list_of_instance_of_player_soldiers = draw_ships( ally_list , player_soldier )
+	my_commander.my_soldiers = list_of_instance_of_player_soldiers
 	
 	var opponent = [ ]
 	for command in range(0,number_of_commanders):

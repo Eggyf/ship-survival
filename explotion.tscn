@@ -33,5 +33,6 @@ tracks/0/keys = {
 
 [node name="explotion_animation" type="AnimationPlayer"]
 root_node = NodePath("../explotion")
+playback_speed = 6.0
 anims/RESET = SubResource( 3 )
 anims/explotion = SubResource( 4 )

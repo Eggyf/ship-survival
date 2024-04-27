@@ -4,16 +4,17 @@ var motion = Vector2()
 var rotation_head = 0
 var limit
 var thread =  Thread.new()
-var life = 100
-var Bullet = preload("res://bullet.tscn")
-var id = "friend"
+var life = 500
+var Bullet = preload("res://bullet.tscn")       
+var id = "my_commander"
 var dimention_x
-var dimention_y 
+var dimention_y
+var time = 0
 var enemy_detected = false
 var enemy_list = []
 var shot_avaliable = false
 var ship_name
-var time = 0 # time between every key press of the type ( up, down , left , right )
+var my_soldiers = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -34,11 +35,11 @@ func change_time():
 
 	pass
 
-func change_direction(action,x=30,y=30):
+func change_direction( action, x=30 , y=30 ):
 	
 	$AnimatedSprite.animation = "speed1"
 	
-	if action == "down" and time == 0  and not $down.is_colliding() :
+	if action == "down" and time == 0  and not $direction_collision.down_is_colliding() :
 		if rotation_head == 90:
 			$AnimatedSprite.animation = "step_back"
 		elif rotation_head == 0 or rotation_head == 360:
@@ -50,7 +51,7 @@ func change_direction(action,x=30,y=30):
 			
 		motion.y += y
 	
-	if action == "up" and time == 0 and not $up.is_colliding():
+	if action == "up" and time == 0 and not $direction_collision.up_is_colliding():
 		
 		if rotation_head == 270:
 			$AnimatedSprite.animation = "step_back"
@@ -63,7 +64,7 @@ func change_direction(action,x=30,y=30):
 		
 		motion.y += - y
 	
-	if action == "left" and time == 0 and not $left.is_colliding():
+	if action == "left" and time == 0 and not $direction_collision.left_is_colliding():
 		
 		if rotation_head == 90:
 			$AnimatedSprite.animation = "desplace_right"
@@ -76,7 +77,7 @@ func change_direction(action,x=30,y=30):
 			
 		motion.x += - x
 	
-	if action == "right" and time == 0 and not $right.is_colliding():
+	if action == "right" and time == 0 and not $direction_collision.right_is_colliding():
 		
 		if rotation_head == 90:
 			$AnimatedSprite.animation = "desplace_left"
@@ -135,12 +136,12 @@ func defend_position( vector ):
 		shot( direction )
 		shot_avaliable = false
 		
-	pass		
-
+	pass	
+	
 func fill_life():
 		
-	if life < 100 and time == 0:
-		life += 0.1
+	if life < 500 and time == 0 :
+		life += 0.5
 	
 	pass
 
@@ -158,8 +159,8 @@ func _physics_process(delta):
 	
 	pass
 
-func start_position(pos , dimention_x , dimention_y ):
-	
+func start_position( pos , dimention_x , dimention_y ):
+
 	position = pos
 	show()
 	$explotion.hide()
@@ -201,32 +202,6 @@ func rocket_explotion():
 	
 	pass
 
-func _on_soldier_user_area_entered(area):
-	
-	if area.id == "enemy":
-		ship_explotion()
-		get_parent().ship_explotion.play()
-	elif area.id == "commander":
-		ship_explotion()
-		get_parent().ship_explotion.play()
-	elif area.id == "player":
-		ship_explotion()
-		get_parent().ship_explotion.play()
-	elif area.id == "my_commander":
-		ship_explotion()
-		get_parent().ship_explotion.play()
-	elif area.id == "bullet":
-		life -= 20
-		rocket_explotion()
-		area.queue_free()
-		get_parent().impact.play()
-		
-	if life <= 0 :
-		ship_explotion()
-		get_parent().ship_explotion.play()
-	
-	pass # Replace with function body.
-
 func _on_ship_collision_animation_animation_finished(anim_name):
 	get_parent().call_deferred("remove_child",self)
 	pass # Replace with function body.
@@ -235,16 +210,12 @@ func _on_explotion_animation_animation_finished(anim_name):
 	$explotion.hide()
 	pass # Replace with function body.
 
-func _on_attack_rate_timeout():
-	shot_avaliable = true
-	pass # Replace with function body.
-
 func _on_radar_enemy():
-	
+
 	enemy_detected = true
 
 	enemy_list = $radar.enemy_list
-	
+
 	pass # Replace with function body.
 
 func _on_radar_enemy_exited():
@@ -252,5 +223,34 @@ func _on_radar_enemy_exited():
 	enemy_list = $radar.enemy_list	
 	if enemy_list.size() == 0:
 		enemy_detected = false
+		
+	pass # Replace with function body.
+
+func _on_attack_rate_timeout():
 	
+	shot_avaliable = true
+	
+	pass # Replace with function body.
+
+func _on_you_commander_area_entered(area):
+	
+	if area.id == "enemy":
+		ship_explotion()
+		get_parent().commander_dead.play()
+	elif area.id == "friend":
+		ship_explotion()
+		get_parent().commander_dead.play()
+	elif area.id == "player":
+		ship_explotion()
+		get_parent().commander_dead.play()
+	elif area.id == "bullet":
+		life -= 20
+		area.queue_free()
+		rocket_explotion()
+		get_parent().impact.play()
+		
+	if life <= 0 :
+		ship_explotion()
+		get_parent().commander_dead.play()
+
 	pass # Replace with function body.

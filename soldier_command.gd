@@ -164,7 +164,7 @@ func _ready():
 	
 	hide()
 	$life_tag.set_life(life)
-	$radar.targets = ["friend" , "player"]
+	$radar.targets = ["friend" , "player" , "my_commander"]
 	ship_name = id.hash()
 
 	#InstructionsStack = ['right','right','right','right','right','right','right','right','right','right']
@@ -347,6 +347,9 @@ func _on_enemy_soldier_area_entered(area):
 		ship_explotion()
 		get_parent().ship_explotion.play()
 	elif area.id == "player":
+		ship_explotion()
+		get_parent().ship_explotion.play()
+	elif area.id == "my_commander":
 		ship_explotion()
 		get_parent().ship_explotion.play()
 	elif area.id == "bullet":

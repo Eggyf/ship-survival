@@ -218,6 +218,9 @@ func _on_player_area_entered(area):
 	elif area.id == "commander":
 		ship_explotion()
 		get_parent().player_dead.play()
+	elif area.id == "my_commander":
+		ship_explotion()
+		get_parent().ship_explotion.play()
 	elif area.id == "bullet":
 		life -= 20
 		rocket_explotion()
