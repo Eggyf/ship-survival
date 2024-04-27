@@ -86,21 +86,17 @@ func change_direction(position,delta):
 
 func rotate_clock_wise():
 	
-	self.rotate(PI/20) 
-	$direction_collision.rotate(-PI/20)
-	rotation_head += -9
+	rotation_degrees +=5
+	$direction_collision.rotation_degrees -=5
+	rotation_head += -5
 	pass
 
 func rotate_against_clock_wise():
 	
-	self.rotate(-PI/20) 
-	$direction_collision.rotate(PI/20)
-	rotation_head += 9
+	rotation_degrees += -5
+	$direction_collision.rotation_degrees += 5
+	rotation_head += 5
 	pass
-
-func is_colliding():
-	
-	return $up.is_colliding() or $down.is_colliding() or $right.is_colliding() or $left.is_colliding()
 
 func change_rotation():
 		
@@ -138,7 +134,7 @@ func change_time():
 
 	pass
 
-func _process(delta):
+func _physics_process(delta):
 
 	motion = Vector2()
 	

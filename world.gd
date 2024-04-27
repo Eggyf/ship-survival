@@ -506,7 +506,7 @@ func csp( flag_position , number_ship , map ):
 	emit_signal("not_ship_placement")
 
 func _on_world_not_ship_placement():
-	
+	print("reloading scene")
 	get_tree().reload_current_scene()
 	
 	pass # Replace with function body.

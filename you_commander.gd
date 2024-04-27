@@ -37,56 +37,56 @@ func change_time():
 
 func change_direction( action, x=30 , y=30 ):
 	
-	$AnimatedSprite.animation = "speed1"
+	$Sprite.animation = "speed1"
 	
 	if action == "down" and time == 0  and not $direction_collision.down_is_colliding() :
 		if rotation_head == 90:
-			$AnimatedSprite.animation = "step_back"
+			$Sprite.animation = "step_back"
 		elif rotation_head == 0 or rotation_head == 360:
-			$AnimatedSprite.animation = "desplace_left"
+			$Sprite.animation = "desplace_left"
 		elif rotation_head == 180:
-			$AnimatedSprite.animation = "desplace_right"
+			$Sprite.animation = "desplace_right"
 		else:
-			$AnimatedSprite.animation = "speed3"
+			$Sprite.animation = "speed3"
 			
 		motion.y += y
 	
 	if action == "up" and time == 0 and not $direction_collision.up_is_colliding():
 		
 		if rotation_head == 270:
-			$AnimatedSprite.animation = "step_back"
+			$Sprite.animation = "step_back"
 		elif rotation_head == 0 or rotation_head == 360:
-			$AnimatedSprite.animation = "desplace_right"
+			$Sprite.animation = "desplace_right"
 		elif rotation_head == 180:
-			$AnimatedSprite.animation = "desplace_left"
+			$Sprite.animation = "desplace_left"
 		else:
-			$AnimatedSprite.animation = "speed3"
+			$Sprite.animation = "speed3"
 		
 		motion.y += - y
 	
 	if action == "left" and time == 0 and not $direction_collision.left_is_colliding():
 		
 		if rotation_head == 90:
-			$AnimatedSprite.animation = "desplace_right"
+			$Sprite.animation = "desplace_right"
 		elif rotation_head == 270:
-			$AnimatedSprite.animation = "desplace_left"
+			$Sprite.animation = "desplace_left"
 		elif rotation_head == 0 or rotation_head == 360 :
-			$AnimatedSprite.animation = "step_back"
+			$Sprite.animation = "step_back"
 		else:
-			$AnimatedSprite.animation = "speed3"
+			$Sprite.animation = "speed3"
 			
 		motion.x += - x
 	
 	if action == "right" and time == 0 and not $direction_collision.right_is_colliding():
 		
 		if rotation_head == 90:
-			$AnimatedSprite.animation = "desplace_left"
+			$Sprite.animation = "desplace_left"
 		elif rotation_head == 270:
-			$AnimatedSprite.animation = "desplace_right"
+			$Sprite.animation = "desplace_right"
 		elif rotation_head == 180 :
-			$AnimatedSprite.animation = "step_back"
+			$Sprite.animation = "step_back"
 		else:
-			$AnimatedSprite.animation = "speed3"
+			$Sprite.animation = "speed3"
 			
 		motion.x +=  x
 	
