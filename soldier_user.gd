@@ -148,7 +148,12 @@ func defend_position( vector ):
 	pass		
 
 func no_shot():
-	return not $shot_eye.is_colliding()
+	if $shot_eye.is_colliding():
+		var tar = $shot_eye.get_collider()
+		print(tar)
+		if  tar.id == "player" or tar.id == "friend" or tar.id == "my_commander" or tar.id == "wall":
+			return false
+	return true
 
 func fill_life():
 		

@@ -136,14 +136,20 @@ func face_to_enemy( vector: Vector2 ):
 func defend_position( vector ):
 	
 	var direction = face_to_enemy(vector)
-	if shot_avaliable and not no_shot() :
+	if shot_avaliable and no_shot() :
 		shot( direction )
 		shot_avaliable = false
 		
 	pass	
 
 func no_shot():
-	return not $shot_eye.is_colliding()
+	if $shot_eye.is_colliding():
+		var tar = $shot_eye.get_collider()
+		print(tar)
+		if  tar.id == "player" or tar.id == "friend" or tar.id == "my_commander" or tar.id == "wall":
+			return false
+	return true
+
 func fill_life():
 		
 	if life < 500 and time == 0 :

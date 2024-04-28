@@ -4,7 +4,7 @@ var motion = Vector2()
 var rotation_head = 0
 var limit
 var thread =  Thread.new()
-var life = 200
+var life = 10000
 export (PackedScene) var Bullet
 var time = 8 # time between every key press of the type ( up, down , left , right )
 var id = "player"
