@@ -94,7 +94,7 @@ position = Vector2( -18, -37 )
 rotation = -1.5708
 enabled = true
 cast_to = Vector2( 0, 500 )
-collision_mask = 4111
+collision_mask = 4127
 collide_with_areas = true
 collide_with_bodies = false
 

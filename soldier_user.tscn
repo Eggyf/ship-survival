@@ -57,10 +57,10 @@ script = ExtResource( 7 )
 scale = Vector2( 0.098546, 0.0998039 )
 frames = SubResource( 1 )
 animation = "speed1"
-frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource( 2 )
 
 [node name="explotion_animation" parent="." instance=ExtResource( 9 )]
@@ -93,6 +93,8 @@ rotation = -1.5708
 enabled = true
 cast_to = Vector2( 0, 500 )
 collision_mask = 4105
+collide_with_areas = true
+collide_with_bodies = false
 
 [connection signal="area_entered" from="." to="." method="_on_soldier_user_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]
