@@ -290,8 +290,7 @@ func _on_radar_area_entered(area):
 	for item in ally_detection:
 			
 		if item == area.id:
-			ally.append( area )
-			print("command> ", item)
+			ally.append( area )		
 	
 	pass # Replace with function body.
 

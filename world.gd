@@ -75,7 +75,7 @@ func _ready():
 	player = preload("res://player.tscn")
 	your_commander = preload("res://you_commander.tscn")
 	
-	init(  1  , 5 , 5 ) 
+	init(  1  , 10 , 10 ) 
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	

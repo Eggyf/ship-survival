@@ -27,8 +27,6 @@ func _on_wall_area_area_entered(area):
 	
 	pass # Replace with function body.
 
-
-
 func _on_explotion_animation_animation_finished(anim_name):
 	$explotion.hide()
 	pass # Replace with function body.

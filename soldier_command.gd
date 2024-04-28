@@ -410,7 +410,6 @@ func _on_radar_area_entered(area):
 			
 		if item == area.id:
 			ally.append( area )
-			print("enemy> ", item)
 	
 	pass # Replace with function body.
 
