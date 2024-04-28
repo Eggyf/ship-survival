@@ -58,7 +58,6 @@ position = Vector2( -0.483826, 0 )
 scale = Vector2( 0.151062, 0.118333 )
 frames = SubResource( 1 )
 animation = "speed1"
-frame = 1
 playing = true
 offset = Vector2( -133, 0 )
 flip_v = true
@@ -105,3 +104,4 @@ collide_with_bodies = false
 [connection signal="area_entered" from="radar" to="." method="_on_radar_area_entered"]
 [connection signal="area_exited" from="radar" to="." method="_on_radar_area_exited"]
 [connection signal="timeout" from="attack_rate" to="." method="_on_attack_rate_timeout"]
+[connection signal="restart_position" from="direction_collision" to="." method="_on_direction_collision_restart_position"]
