@@ -10,26 +10,20 @@ var id = "friend"
 var dimention_x
 var dimention_y 
 var enemy_detected = false
-var enemy_list = []
 var shot_avaliable = false
 var ship_name
 var time = 0 # time between every key press of the type ( up, down , left , right )
-var ally = []
 signal killed
-var radar = preload("res://radar.tscn")
+var enemy_list = []
+var ally = []
+var targets = ["enemy","commander"]
+var ally_detection = ["friend","my_commander","player"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	hide()
 	$life_tag.set_life(life)
-	radar = radar.instance()
-	radar.set_enemy(["commander" , "enemy"])
-	radar.set_ally(["friend","player","my_commander"])
-	radar.connect("ally_in", self, "_on_radar_ally_in")
-	radar.connect("ally_leave", self, "_on_radar_ally_leave")
-	radar.connect("enemy", self, "_on_radar_enemy")
-	radar.connect("enemy_exited", self, "_on_radar_ally_leave")
 	
 	ship_name = id.hash()
 	
@@ -267,28 +261,38 @@ func _on_attack_rate_timeout():
 	shot_avaliable = true
 	pass # Replace with function body.
 
-func _on_radar_enemy():
+func _on_radar_area_entered(area):
 	
-	enemy_detected = true
-
-	enemy_list = $radar.enemy_list
+	for item in targets:
+		
+		if item == area.id:
+			enemy_list.append( area )
+			enemy_detected = true
+			
+	for item in ally_detection:
+		
+		if item == area.id:
+			ally.append( area )
+			print("friend> ", item )		
 	
 	pass # Replace with function body.
 
-func _on_radar_enemy_exited():
-	
-	enemy_list = $radar.enemy_list	
-	if enemy_list.size() == 0:
-		enemy_detected = false
-	
-	pass # Replace with function body.
+func _on_radar_area_exited(area):
 
-func _on_radar_ally_in():
-	ally = $radar.ally
-	print("ally > ally in")
-	pass # Replace with function body.
+	var i =0
+	while i < enemy_list.size():
+		
+		if area.id == enemy_list[i].id:
+			enemy_list.remove(i)
+			i -= 1
+		i += 1
+	
+	i = 0
+	while i < ally.size():
+		
+		if area.id == ally[i].id:
+			ally.remove(i)
+			i -= 1
+		i += 1
 
-func _on_radar_ally_leave():
-	ally = $radar.ally
-	print("ally > ally exited")
 	pass # Replace with function body.
