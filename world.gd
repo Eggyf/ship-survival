@@ -159,7 +159,7 @@ func draw_map(Map):
 		for j in range(y_size):
 			if not Map[j][i]:
 				var wall_block = wall.instance()
-				wall_block.set_position(Vector2(i*30 + 15,j*30 + 15))
+				wall_block.global_position = Vector2(i*30 + 15,j*30 + 15)
 				add_child(wall_block)
 				pass
 			pass
