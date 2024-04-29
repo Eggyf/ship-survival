@@ -11,21 +11,21 @@ var dimention_x
 var dimention_y
 var time = 0
 var enemy_detected = false
-var enemy_list = []
 var shot_avaliable = false
 var ship_name
 var my_soldiers = []
-var ally = []
 signal kill
+var enemy_list = []
+var ally = []
+var targets = ["enemy","commander"]
+var ally_detection = ["friend","my_commander","player"]
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	hide()
 	$life_tag.set_life(life)
-	$radar.targets = ["commander" , "enemy"]
-	$radar.ally_detection = ["friend","player"]
-	$radar.ally
 	ship_name = id.hash()
 	
 	pass
@@ -279,12 +279,43 @@ func _on_you_commander_area_entered(area):
 
 	pass # Replace with function body.
 
-func _on_radar_ally_in():
-	ally = $radar.ally
-	print("my_commander > ally detected")
+func _on_radar_area_entered(area):
+	
+	for item in targets:
+		
+		if item == area.id:
+			enemy_list.append( area )
+			enemy_detected = true
+	
+	for item in ally_detection:
+		
+		if item == area.id:
+			ally.append( area )
+	
 	pass # Replace with function body.
 
-func _on_radar_ally_leave():
-	ally = $radar.ally
-	print("my_commander > ally exited")
+func _on_radar_area_exited(area):
+	
+	var i =0
+	while i < enemy_list.size():
+		
+		if area.id == enemy_list[i].id:
+			enemy_list.remove(i)
+			i -= 1
+		i += 1
+	
+	i = 0
+	while i < ally.size():
+		
+		if area.id == ally[i].id:
+			ally.remove(i)
+			emit_signal("ally_leave")
+			i -= 1
+		i += 1
+
+	pass # Replace with function body.
+
+func _on_direction_collision_restart_position():
+	
+	global_position = $direction_collision.last_avaliable_pos
 	pass # Replace with function body.

@@ -75,7 +75,7 @@ func _ready():
 	player = preload("res://player.tscn")
 	your_commander = preload("res://you_commander.tscn")
 	
-	init(  1  , 5 , 5 ) 
+	init(  1  , 10 , 10 ) 
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	
@@ -159,7 +159,7 @@ func draw_map(Map):
 		for j in range(y_size):
 			if not Map[j][i]:
 				var wall_block = wall.instance()
-				wall_block.set_position(Vector2(i*30 + 15,j*30 + 15))
+				wall_block.global_position = Vector2(i*30 + 15,j*30 + 15)
 				add_child(wall_block)
 				pass
 			pass

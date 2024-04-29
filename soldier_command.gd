@@ -20,12 +20,14 @@ var dimention_y
 var enemy_detected = false
 var enemy_on_target = false
 var time = 0 # time between every key press of the type ( up, down , left , right )
-var enemy_list = []
 var shot_avaliable = false
 var delta
 var ship_name
-var ally = []
 signal kill
+var ally = []
+var enemy_list = []
+var targets = ["friend", "player" ,"my_commander"]
+var ally_detection = ["commander","enemy"]
 
 # Called when the node enters the scene tree for the first time.
 
@@ -166,8 +168,6 @@ func _ready():
 	
 	hide()
 	$life_tag.set_life(life)
-	$radar.targets = ["friend" , "player" , "my_commander"]
-	$radar.ally_detection = ["enemy","commander"]
 	ship_name = id.hash()
 
 	#InstructionsStack = ['right','right','right','right','right','right','right','right','right','right']
@@ -398,28 +398,43 @@ func _on_attack_rate_timeout():
 	shot_avaliable = true
 	pass # Replace with function body.
 
-func _on_radar_enemy():
-	
-	enemy_detected = true
+func _on_radar_area_entered(area):
 
-	enemy_list = $radar.enemy_list	
-
-	pass # Replace with function body.
-
-func _on_radar_enemy_exited():
-
-	enemy_list = $radar.enemy_list	
-	if enemy_list.size() == 0:
-		enemy_detected = false
+	for item in targets:
+			
+			if item == area.id:
+				enemy_list.append( area )
+				enemy_detected = true
 		
+	for item in ally_detection:
+			
+		if item == area.id:
+			ally.append( area )
+	
 	pass # Replace with function body.
 
-func _on_radar_ally_in():
-	ally = $radar.ally
-	print("enemy > ally in")
+func _on_radar_area_exited(area):
+	
+	var i =0
+	while i < enemy_list.size():
+		
+		if area.id == enemy_list[i].id:
+			enemy_list.remove(i)
+			i -= 1
+		i += 1
+	
+	i = 0
+	while i < ally.size():
+		
+		if area.id == ally[i].id:
+			ally.remove(i)
+			emit_signal("ally_leave")
+			i -= 1
+		i += 1
+	
 	pass # Replace with function body.
 
-func _on_radar_ally_leave():
-	ally = $radar.ally
-	print("enemy > ally exited")
+func _on_direction_collision_restart_position():
+	
+	global_position = $direction_collision.last_avaliable_pos
 	pass # Replace with function body.

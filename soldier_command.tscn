@@ -79,10 +79,8 @@ frame = 0
 position = Vector2( 38, -1 )
 
 [node name="radar" parent="." instance=ExtResource( 32 )]
-visible = false
 position = Vector2( 1, 0 )
-collision_layer = 32768
-collision_mask = 9
+collision_mask = 4175
 
 [node name="attack_rate" type="Timer" parent="."]
 wait_time = 0.5
@@ -97,15 +95,14 @@ position = Vector2( -18, -37 )
 rotation = -1.5708
 enabled = true
 cast_to = Vector2( 0, 500 )
-collision_mask = 4111
+collision_mask = 4127
 collide_with_areas = true
 collide_with_bodies = false
 
 [connection signal="area_entered" from="." to="." method="_on_enemy_soldier_area_entered"]
 [connection signal="animation_finished" from="explotion_animation" to="." method="_on_explotion_animation_animation_finished"]
 [connection signal="animation_finished" from="ship_collision_animation" to="." method="_on_ship_collision_animation_animation_finished"]
-[connection signal="ally_in" from="radar" to="." method="_on_radar_ally_in"]
-[connection signal="ally_leave" from="radar" to="." method="_on_radar_ally_leave"]
-[connection signal="enemy" from="radar" to="." method="_on_radar_enemy"]
-[connection signal="enemy_exited" from="radar" to="." method="_on_radar_enemy_exited"]
+[connection signal="area_entered" from="radar" to="." method="_on_radar_area_entered"]
+[connection signal="area_exited" from="radar" to="." method="_on_radar_area_exited"]
 [connection signal="timeout" from="attack_rate" to="." method="_on_attack_rate_timeout"]
+[connection signal="restart_position" from="direction_collision" to="." method="_on_direction_collision_restart_position"]

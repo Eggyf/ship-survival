@@ -10,18 +10,21 @@
 script = ExtResource( 5 )
 
 [node name="up" parent="." instance=ExtResource( 2 )]
+position = Vector2( 0, -15 )
 
 [node name="down" parent="." instance=ExtResource( 4 )]
+position = Vector2( 0, 15 )
 
 [node name="left" parent="." instance=ExtResource( 1 )]
+position = Vector2( -15, 0 )
 rotation = 3.14159
 scale = Vector2( 1, 6 )
 
 [node name="right" parent="." instance=ExtResource( 3 )]
-position = Vector2( -7.62939e-06, 0 )
+position = Vector2( 15, 0 )
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.5
 autostart = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

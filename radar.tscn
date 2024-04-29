@@ -12,6 +12,3 @@ script = ExtResource( 1 )
 
 [node name="radar" type="CollisionShape2D" parent="."]
 shape = SubResource( 3 )
-
-[connection signal="area_entered" from="." to="." method="_on_radar_area_entered"]
-[connection signal="area_exited" from="." to="." method="_on_radar_area_exited"]
