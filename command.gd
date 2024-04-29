@@ -19,7 +19,154 @@ var ally = []
 var enemy_list = []
 var targets = ["friend", "player" ,"my_commander"]
 var ally_detection = ["commander","enemy"]
+onready var client = get_tree().current_scene.client
 
+var StateCloser = false
+var StateEvadeStarted = false
+var StateEvading = false
+var StateFar = true
+var StateDefensive = false
+var InstructionsStack = []
+var targetObject
+var targetPosition: Vector2
+var HasTarget = false
+var HasInstruction = false
+var brain = Brain.new()
+var server_connector = ServerConnector.new()
+onready var Map = get_tree().current_scene.my_map
+onready var my_flag_position = get_tree().current_scene.GetRedFlagPosition()
+var flag_found = false
+var flag_position = Vector2()
+var sectors = []
+var sectors_seen = []
+var sectors_created = false
+var selected_sector = Vector2()
+var seen = true
+
+func SearchFlag(pos: Vector2=global_position):
+	server_connector.SendFriendsPositions(my_soldiers,client)
+	server_connector.SendEnemysPositions(enemy_list,client)
+	var my_position = pos
+	while int(my_position.x / 30) >= 100:
+		my_position -= Vector2(1,0)
+		pass
+	while int(my_position.y / 30) >= 100:
+		my_position -= Vector2(0,1)
+		pass
+	var coords = Vector2(int(my_position.x / 30), int(my_position.y / 30))
+	if not sectors_created:
+		sectors_created = true
+		var x_start = 0
+		var x_end = 0
+		if my_flag_position.x < Map[0].size() * 15:
+			x_start = int(Map[0].size() / 2)
+			x_end = Map[0].size()
+		else:
+			x_start = 0
+			x_end = int(Map[0].size() / 2)
+			pass
+
+		for i in range(x_start,x_end,25):
+			for j in range(0,Map.size(),25):
+				var sector_center = Vector2(i,j)
+				sectors.append(sector_center)
+				pass
+			pass
+		pass
+	
+	var distance = abs(coords.x - flag_position.x) + abs(coords.y - flag_position.y)
+	
+	if flag_found and distance < 10:
+		return []
+
+	if distance < 50:
+		seen = true
+		for i in range(sectors.size()):
+			if sectors[i] == selected_sector:
+				sectors.pop_at(i)
+				break
+			pass
+		pass
+		
+	if sectors.size() == 0 and not flag_found:
+		while sectors_seen.size() > 0:
+			sectors.append(sectors_seen.pop_at(0))
+			pass
+		pass
+	
+	if not flag_found and sectors.size() > 0 and seen:
+		var sector = int(rand_range(0,sectors.size()))
+		var x = int(rand_range(selected_sector.x,selected_sector.x + 25))
+		var y = int(rand_range(selected_sector.y,selected_sector.y + 25))
+		selected_sector = sectors.pop_at(sector)
+		sectors_seen.append(selected_sector)
+		flag_position = Vector2(x,y)
+		pass
+	
+	var MinPath = server_connector.GetPathTo(Map,coords,flag_position,[],client)
+	var instructions = brain.TranslatePathToInstrucions(MinPath)
+	return instructions
+
+func SetTargetPosition(position: Vector2):
+	
+	targetPosition = position * 30
+	StateDefensive = true
+	HasTarget = false
+	pass
+
+func SetTargetObject(object):
+	
+	targetObject = object
+	StateDefensive = false
+	HasTarget = true
+	pass
+
+func GetVectorToTargetObject():
+	return targetObject.global_position - global_position
+	
+func GetVectorToTargetPosition():
+	return targetPosition - global_position
+	
+func GetAction(vector: Vector2):
+	
+	var degree = rad2deg(vector.angle())
+	if degree < 45 or degree >= 315:
+		return 'right'
+	if degree < 135 and degree >= 45:
+		return 'down'
+	if degree < 0:
+		return 'left'
+	return 'up'
+
+func FollowInstructions():
+	var instruction = InstructionsStack[0]
+	if not HasInstruction:
+		if instruction == 'right':
+			targetPosition = global_position + Vector2(30,0)
+			pass
+		elif instruction == 'up':
+			targetPosition = global_position + Vector2(0,-30)
+			pass
+		elif instruction == 'down':
+			targetPosition = global_position + Vector2(0,30)
+			pass
+		else:
+			targetPosition = global_position + Vector2(-30,0)
+			pass
+		pass
+	
+	var direction = GetVectorToTargetPosition().normalized()
+		
+	if direction.x == 0 and direction.y == 0:
+		$AnimatedSprite.animation = "speed1"
+		InstructionsStack.pop_at(0)
+		HasInstruction = false
+		pass
+	else:
+		HasInstruction = true
+		pass
+	change_direction(instruction,1,1)
+	pass
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -41,65 +188,44 @@ func change_time():
 
 func change_direction( action, x=30 , y=30 ):
 	
-	$AnimatedSprite.animation = "speed1"
+	if action == 'left' and $direction_collision.left_is_colliding():
+		InstructionsStack.pop_at(0)
+		HasInstruction = false
+		pass
 	
+	if action == 'up' and $direction_collision.up_is_colliding():
+		HasInstruction = false
+		InstructionsStack.pop_at(0)
+		pass
+		
+	if action == 'right' and $direction_collision.right_is_colliding():
+		HasInstruction = false
+		InstructionsStack.pop_at(0)
+		pass
+		
+	if action == 'down' and $direction_collision.down_is_colliding():
+		HasInstruction = false
+		InstructionsStack.pop_at(0)
+		pass
+		
 	if action == "down" and time == 0  and not $direction_collision.down_is_colliding() :
-		if rotation_head == 90:
-			$AnimatedSprite.animation = "step_back"
-		elif rotation_head == 0 or rotation_head == 360:
-			$AnimatedSprite.animation = "desplace_left"
-		elif rotation_head == 180:
-			$AnimatedSprite.animation = "desplace_right"
-		else:
-			$AnimatedSprite.animation = "speed3"
-			
 		motion.y += y
-	
+		pass
 	if action == "up" and time == 0 and not $direction_collision.up_is_colliding():
-		
-		if rotation_head == 270:
-			$AnimatedSprite.animation = "step_back"
-		elif rotation_head == 0 or rotation_head == 360:
-			$AnimatedSprite.animation = "desplace_right"
-		elif rotation_head == 180:
-			$AnimatedSprite.animation = "desplace_left"
-		else:
-			$AnimatedSprite.animation = "speed3"
-		
 		motion.y += - y
-	
+		pass
 	if action == "left" and time == 0 and not $direction_collision.left_is_colliding():
-		
-		if rotation_head == 90:
-			$AnimatedSprite.animation = "desplace_right"
-		elif rotation_head == 270:
-			$AnimatedSprite.animation = "desplace_left"
-		elif rotation_head == 0 or rotation_head == 360 :
-			$AnimatedSprite.animation = "step_back"
-		else:
-			$AnimatedSprite.animation = "speed3"
-			
 		motion.x += - x
-	
+		pass
 	if action == "right" and time == 0 and not $direction_collision.right_is_colliding():
-		
-		if rotation_head == 90:
-			$AnimatedSprite.animation = "desplace_left"
-		elif rotation_head == 270:
-			$AnimatedSprite.animation = "desplace_right"
-		elif rotation_head == 180 :
-			$AnimatedSprite.animation = "step_back"
-		else:
-			$AnimatedSprite.animation = "speed3"
-			
-		motion.x +=  x
-	
+		motion.x += x
+		pass
+	global_position += motion
 	position += motion
 	
-	position.x = clamp(position.x , 50 , dimention_x  )  
-	position.y = clamp(position.y , 0 , dimention_y  ) 
-		
-	return position 
+	#position.x = clamp(position.x , 50 , dimention_x  )
+	#position.y = clamp(position.y , 0 , dimention_y  ) 
+	return position
 
 func target_priority():
 	
@@ -119,7 +245,69 @@ func Defense():
 		defend_position( target )
 	
 	pass
+
+func Attack():
+	var direction: Vector2 = GetVectorToTargetObject()
+	if direction.length_squared() < 150:
+		StateCloser = true
+		StateEvading = false
+		StateEvadeStarted = false
+		pass
+	elif direction.length_squared() < 300:
+		StateCloser = false
+		StateFar = false
+		if not StateEvadeStarted:
+			StateEvadeStarted = true
+			pass
+		else:
+			StateEvading = true
+			pass
+		pass
+	elif direction.length_squared() > 450:
+		StateEvadeStarted = false
+		StateEvading = false
+		StateFar = true
+		pass
 	
+	if StateCloser:
+		change_direction(GetAction(direction * -1),0,0)
+		pass
+	
+	if StateFar:
+		change_direction(GetAction(direction),0,0)
+		pass
+		
+	pass
+
+func MakeAction():
+	if InstructionsStack.size() > 0:
+		FollowInstructions()
+		pass
+	else:
+		CommandSoldiers()
+		InstructionsStack = SearchFlag()
+		pass
+	
+	var my_position = global_position
+	var coords = Vector2(int(my_position.x / 30), int(my_position.y / 30))
+	
+	var i = 0
+	while i < sectors.size():
+		if abs(coords.x - sectors[i].x) + abs(coords.y - sectors[i].y) < 50:
+			sectors_seen.append(sectors.pop_at(i))
+			continue
+		i += 1
+		pass
+	
+	pass
+
+func CommandSoldiers():
+	for soldier in my_soldiers:
+		soldier.InstructionsStack = SearchFlag(soldier.global_position)
+		print(soldier.global_position)
+		pass
+	pass
+
 func face_to_enemy( vector: Vector2 ):
 	
 	var degree = vector.normalized().angle()
@@ -165,6 +353,8 @@ func _physics_process(delta):
 	fill_life()
 	
 	change_time()
+	
+	MakeAction()
 	
 	Defense()
 	
@@ -286,7 +476,13 @@ func _on_radar_area_entered(area):
 			if item == area.id:
 				enemy_list.append( area )
 				enemy_detected = true
-		
+	
+	if area.id == "blue_flag":
+		flag_found = true
+		flag_position = area.coordenate
+		SearchFlag()
+		print('blue flag found')
+			
 	for item in ally_detection:
 			
 		if item == area.id:

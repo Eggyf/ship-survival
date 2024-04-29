@@ -19,6 +19,78 @@ var ally = []
 var targets = ["enemy","commander"]
 var ally_detection = ["friend","my_commander","player"]
 
+var StateCloser = false
+var StateEvadeStarted = false
+var StateEvading = false
+var StateFar = true
+var StateDefensive = false
+var InstructionsStack = []
+var targetObject
+var targetPosition: Vector2
+var HasTarget = false
+var HasInstruction = false
+
+func SetTargetPosition(position: Vector2):
+	
+	targetPosition = position * 30
+	StateDefensive = true
+	HasTarget = false
+	pass
+
+func SetTargetObject(object):
+	
+	targetObject = object
+	StateDefensive = false
+	HasTarget = true
+	pass
+
+func GetVectorToTargetObject():
+	return targetObject.global_position - global_position
+	
+func GetVectorToTargetPosition():
+	return targetPosition - global_position
+	
+func GetAction(vector: Vector2):
+	
+	var degree = rad2deg(vector.angle())
+	if degree < 45 or degree >= 315:
+		return 'right'
+	if degree < 135 and degree >= 45:
+		return 'down'
+	if degree < 0:
+		return 'left'
+	return 'up'
+
+func FollowInstructions():
+	var instruction = InstructionsStack[0]
+	if not HasInstruction:
+		if instruction == 'right':
+			targetPosition = global_position + Vector2(30,0)
+			pass
+		elif instruction == 'up':
+			targetPosition = global_position + Vector2(0,-30)
+			pass
+		elif instruction == 'down':
+			targetPosition = global_position + Vector2(0,30)
+			pass
+		else:
+			targetPosition = global_position + Vector2(-30,0)
+			pass
+		pass
+	
+	var direction = GetVectorToTargetPosition().normalized()
+		
+	if direction.x == 0 and direction.y == 0:
+		$AnimatedSprite.animation = "speed1"
+		InstructionsStack.pop_at(0)
+		HasInstruction = false
+		pass
+	else:
+		HasInstruction = true
+		pass
+	change_direction(instruction,1,1)
+	pass
+	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
@@ -40,64 +112,43 @@ func change_time():
 
 func change_direction(action,x=30,y=30):
 	
-	$AnimatedSprite.animation = "speed1"
+	if action == 'left' and $direction_collision.left_is_colliding():
+		InstructionsStack.pop_at(0)
+		HasInstruction = false
+		pass
 	
+	if action == 'up' and $direction_collision.up_is_colliding():
+		HasInstruction = false
+		InstructionsStack.pop_at(0)
+		pass
+		
+	if action == 'right' and $direction_collision.right_is_colliding():
+		HasInstruction = false
+		InstructionsStack.pop_at(0)
+		pass
+		
+	if action == 'down' and $direction_collision.down_is_colliding():
+		HasInstruction = false
+		InstructionsStack.pop_at(0)
+		pass
+		
 	if action == "down" and time == 0  and not $direction_collision.down_is_colliding() :
-		if rotation_head == 90:
-			$AnimatedSprite.animation = "step_back"
-		elif rotation_head == 0 or rotation_head == 360:
-			$AnimatedSprite.animation = "desplace_left"
-		elif rotation_head == 180:
-			$AnimatedSprite.animation = "desplace_right"
-		else:
-			$AnimatedSprite.animation = "speed3"
-			
 		motion.y += y
-	
+		pass
 	if action == "up" and time == 0 and not $direction_collision.up_is_colliding():
-		
-		if rotation_head == 270:
-			$AnimatedSprite.animation = "step_back"
-		elif rotation_head == 0 or rotation_head == 360:
-			$AnimatedSprite.animation = "desplace_right"
-		elif rotation_head == 180:
-			$AnimatedSprite.animation = "desplace_left"
-		else:
-			$AnimatedSprite.animation = "speed3"
-		
 		motion.y += - y
-	
+		pass
 	if action == "left" and time == 0 and not $direction_collision.left_is_colliding():
-		
-		if rotation_head == 90:
-			$AnimatedSprite.animation = "desplace_right"
-		elif rotation_head == 270:
-			$AnimatedSprite.animation = "desplace_left"
-		elif rotation_head == 0 or rotation_head == 360 :
-			$AnimatedSprite.animation = "step_back"
-		else:
-			$AnimatedSprite.animation = "speed3"
-			
 		motion.x += - x
-	
-	if action == "right" and time == 0 and not $direction_collision.rigth_is_colliding():
-		
-		if rotation_head == 90:
-			$AnimatedSprite.animation = "desplace_left"
-		elif rotation_head == 270:
-			$AnimatedSprite.animation = "desplace_right"
-		elif rotation_head == 180 :
-			$AnimatedSprite.animation = "step_back"
-		else:
-			$AnimatedSprite.animation = "speed3"
-			
-		motion.x +=  x
-	
+		pass
+	if action == "right" and time == 0 and not $direction_collision.right_is_colliding():
+		motion.x += x
+		pass
+	global_position += motion
 	position += motion
 	
-	position.x = clamp(position.x , 50 , dimention_x  )  
-	position.y = clamp(position.y , 0 , dimention_y  ) 
-		
+	#position.x = clamp(position.x , 50 , dimention_x  )
+	#position.y = clamp(position.y , 0 , dimention_y  ) 
 	return position 
 
 func target_priority():
@@ -116,6 +167,59 @@ func Defense():
 	if enemy_detected:
 		var target = target_priority()
 		defend_position( target )
+	
+	pass
+
+func Attack():
+	var direction: Vector2 = GetVectorToTargetObject()
+	if direction.length_squared() < 150:
+		StateCloser = true
+		StateEvading = false
+		StateEvadeStarted = false
+		pass
+	elif direction.length_squared() < 300:
+		StateCloser = false
+		StateFar = false
+		if not StateEvadeStarted:
+			StateEvadeStarted = true
+			pass
+		else:
+			StateEvading = true
+			pass
+		pass
+	elif direction.length_squared() > 450:
+		StateEvadeStarted = false
+		StateEvading = false
+		StateFar = true
+		pass
+	
+	if StateCloser:
+		change_direction(GetAction(direction * -1),0,0)
+		pass
+	
+	if StateFar:
+		change_direction(GetAction(direction),0,0)
+		pass
+		
+	pass
+	
+func MakeAction():
+	if InstructionsStack.size() > 0:
+		FollowInstructions()
+		pass
+	elif StateDefensive:
+		var direction = GetVectorToTargetPosition().normalized()
+		if direction.x == 0 and direction.y == 0:
+			$AnimatedSprite.animation = "speed1"
+			pass
+		change_direction(GetAction(direction),1,1)
+		Defense()
+		pass
+	elif HasTarget:
+		Attack()
+		pass
+	else:
+		pass
 	
 	pass
 	
@@ -165,6 +269,8 @@ func _physics_process(delta):
 	fill_life()
 	
 	change_time()
+	
+	MakeAction()
 	
 	Defense()
 	

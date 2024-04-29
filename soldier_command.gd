@@ -153,7 +153,7 @@ func MakeAction():
 		if direction.x == 0 and direction.y == 0:
 			$AnimatedSprite.animation = "speed1"
 			pass
-		change_direction(GetAction(direction),0,0)
+		change_direction(GetAction(direction),1,1)
 		Defense()
 		pass
 	elif HasTarget:

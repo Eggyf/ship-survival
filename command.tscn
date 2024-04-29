@@ -63,6 +63,7 @@ playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )
+disabled = true
 one_way_collision_margin = 10.0
 
 [node name="explotion" parent="." instance=ExtResource( 3 )]
