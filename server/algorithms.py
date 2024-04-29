@@ -14,12 +14,15 @@ def GetPathToPoint(graph, position, goal, enemys, friends):
 
         return abs(x1 - x0) + abs(y1 - y0)
 
+    def ParseNode(node):
+        return int(node.split(",")[0]), int(node.split(",")[0])
+
     def Heuristic(node0, node1):
         coords0 = node0.split(",")
         coords1 = node1.split(",")
 
-        coords0 = int(coords0[0]), int(coords0[1])
-        coords1 = int(coords1[0]), int(coords1[1])
+        coords0 = ParseNode(node0)
+        coords1 = ParseNode(node1)
 
         max_manhatan_distance = 0
         for friend in friends:
@@ -46,6 +49,23 @@ def GetPathToPoint(graph, position, goal, enemys, friends):
         )
 
     new_goal = None
+    new_position = None
+
+    if not position in graph.nodes:
+
+        new_position = list(graph.nodes)[0]
+        distance = ManhatanDistance(ParseNode(new_position), ParseNode(position))
+        for node in graph.nodes:
+            if node == position:
+                continue
+            d = ManhatanDistance(ParseNode(node), ParseNode(position))
+            if d < distance:
+                distance = d
+                new_position = node
+                pass
+            pass
+        pass
+
     if not goal in graph.nodes:
 
         new_goal = list(graph.nodes)[0]
@@ -63,6 +83,10 @@ def GetPathToPoint(graph, position, goal, enemys, friends):
 
     if not new_goal == None:
         goal = new_goal
+        pass
+
+    if not new_position == None:
+        position = new_position
         pass
 
     return list(astar_path(graph, position, goal, heuristic=Heuristic))
