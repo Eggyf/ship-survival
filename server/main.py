@@ -118,7 +118,7 @@ HOST = argv[1]
 PORT = int(argv[2])
 
 server = socket(skt.AF_INET, skt.SOCK_STREAM)
-server.bind((HOST,PORT))
+server.bind((HOST, PORT))
 server.listen(1)
 Alive = True
 
