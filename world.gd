@@ -53,12 +53,18 @@ var left_flag
 var right_flag
 var last_player_pos = Vector2.ZERO
 
+func GetBlueFlagPosition():
+	return $blue_flag.global_position
+	
+func GetRedFlagPosition():
+	return $red_flag.global_position
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	screen_size = get_viewport_rect().size
 	
-	OS.execute('py',[server_global_location,host,port],false,[])
+	#OS.execute('py',[server_global_location,host,port],false,[])
 	 
 	client.connect_to_host(host,port)
 	
@@ -75,10 +81,14 @@ func _ready():
 	player = preload("res://player.tscn")
 	your_commander = preload("res://you_commander.tscn")
 	
-	init(  1  , 10 , 10 ) 
+	init(  1  , 5 , 5 ) 
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	
+	connector.SendBuildGraphRequest(my_map,client)
+	var player_pos = player.global_position
+	player.global_position = Vector2(int(player_pos.x / 30),int(player_pos.y / 30)) * 30 + Vector2(15,15)
+
 	pass
 
 func _process(delta): 
